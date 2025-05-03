@@ -3,4 +3,7 @@ declare -g title text
 title="An update is available!"
 text="## 3.2.0.4687 (2025-05-03)
 
-No changes."
+### fixes (2 changes)
+
+- fix(rtorrent): improved flagging of current package holds for a more reliable update
+- fix(jellyseerr): bump 'node@22.11.0' and 'pnpm@9.0.0'"
