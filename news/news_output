@@ -1,24 +1,8 @@
 #!/bin/bash
 declare -g title text
 title="An update is available!"
-text="## 3.2.0.4676 (2025-05-03)
+text="## 3.2.0.4682 (2025-05-03)
 
-### enhancements (4 changes)
+### fixes (1 change)
 
-- enh(appInfo|UI): improved Emby/Jellyfin token retrieval logic.
-- enh(core|UI): improved API URL retrieval for Emby/Jellyfin
-- enh(installer): enhance QuickBox Pro installation process
-- enh(iris): improved info on motd header
-
-### fixes (4 changes)
-
-- fix(emby|jellyfin):  corrected logic to handle domain names when generating certificates
-- fix(core): update 'Iris' installation method
-- fix(rtorrent): skip 'xmlrpc-c' install for versions that do not require it
-- minor(update): remove test resolver on update/fix
-
-### tweaks (3 changes)
-
-- tweak(netdata): on update, challenge held packages properly for full update
-- tweak(news): pull date checking from updated github source
-- tweak(motd): usefulness on data display"
+- fix(update check): correction to fetched changelog locations"
