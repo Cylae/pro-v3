@@ -19,8 +19,8 @@ text="## 3.2.0.4682 (2025-05-03)
 ### fixes (4 changes)
 
 - fix(emby|jellyfin):  corrected logic to handle domain names when generating certificates
-- fix(core): update `Iris` installation method
-- fix(rtorrent): skip `xmlrpc-c` install for versions that do not require it
+- fix(core): update 'Iris' installation method
+- fix(rtorrent): skip 'xmlrpc-c' install for versions that do not require it
 - minor(update): remove test resolver on update/fix
 
 ### tweaks (3 changes)
