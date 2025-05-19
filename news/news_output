@@ -1,10 +1,21 @@
 #!/bin/bash
 declare -g title text
 title="An update is available!"
-text="## 3.2.0.4696 (2025-05-09)
+text="## 3.2.0.4706 (2025-05-19)
 
-### fixes (3 changes)
+### enhancements (7 changes)
 
-- fix(UI): remove redundant ID attributes from PMC install buttons causing modals to fail
-- fix(qbittorrent): modifies the update process to correctly handle temp_dir creation
-- fix(UI|WSD): correction to API URL retrieval logic"
+- enh(ui): style session stream details with badges for improved readability
+- enh(fix|update): refactor 'fix python' and 'pip update' for modularity and clarity
+- enh(WSD): add application version to user stream client data display array
+- enh(core): enhanced support and dependency management
+- enh(api): added 'pro/enable|disable_quickSupport' API endpoints
+- enh(api): added 'system/speedtest' API endpoint
+- enh(api): added 'system/status' API endpoint
+
+### fixes (4 changes)
+
+- fix(wireguard): correction on missing 'is_in_array' function
+- fix(plex|UI): refactor process control and permissions consistency
+- fix(support): updates quickSupport functionality and fixes expiration management
+- fix(qbitorrent): correction to improper array return on libtorrent package during build"
