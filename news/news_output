@@ -1,12 +1,8 @@
 #!/bin/bash
 declare -g title text
 title="An update is available!"
-text="## 3.2.1.0136 (2025-05-31)
+text="## 3.2.1.0137 (2025-05-31)
 
 ### ♨️ Hotfixes (1 changes)
 
-- correction to NET8 package building on duplicati install package
-
-### 🧪 Tweaks (1 changes)
-
-- adjust message output if not a list item"
+- correction to central connection tests"
