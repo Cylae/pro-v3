@@ -1,13 +1,12 @@
 #!/bin/bash
 declare -g title text
 title="An update is available!"
-text="## 3.2.1.0131 (2025-05-31)
+text="## 3.2.1.0136 (2025-05-31)
 
-### 🐛 Fixes (1 changes)
+### ♨️ Hotfixes (1 changes)
 
-- update core components
-> Updates the core QuickBox Pro installation script and related documentation.
-> - Updates the 'qb' script to point the API check to central API endpoints.
-> - Updates translation files for multiple languages to reference GitHub issue tracker.
-> - Updates 'quickbox_install' script and improves 'mflibs' installation.
-> - Updates the news script to use github for the news output."
+- correction to NET8 package building on duplicati install package
+
+### 🧪 Tweaks (1 changes)
+
+- adjust message output if not a list item"
