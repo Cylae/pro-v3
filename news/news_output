@@ -1,34 +1,13 @@
 #!/bin/bash
 declare -g title text
 title="An update is available!"
-text="## 3.2.1.0104 (2025-05-31)
+text="## 3.2.1.0131 (2025-05-31)
 
-### ✨ Enhancements (2 changes)
+### 🐛 Fixes (1 changes)
 
-- modernize duplicati build to current requirements per upstream
-- default fallback values to delete parameters for user_software cleanup
-
-### 🐛 Fixes (15 changes)
-
-- ensure proper config_directory on requestrr per initial config backup
-- correction to branching on readarr build/update
-- normalize wheel version and resolve subliminal install error per sickchill build
-> - correct sickchill wheel version and patch subliminal provider crash
-- software update checker: correction to duplicati scraping
-- correction to regex pattern on notifiarr package discovery during build/update
-- update duplicati build package with NET 8 support
-- utilize proper requirements file on lazylibrarian build/update
-- core: correction to assert url detection on release solving
-- correction to 'testresources' dependency - manage via python3 apt and not pip
-- implement version filtering on the install/update to verify 'v5' series only
-- correction to asset url matching on build package
-- modularize and fix dependency installation logic
-- correct install query parameter for rTorrent '0.15.1' button
-- improved software versioning and argument handling on install/update
-- improvements to user assignment and current port posting on build
-
-### 🧪 Tweaks (1 changes)
-
-- UI: improve changelog readability by including commit body details
-> - Enhances the information presented in the UI changelog.
-> - Updates styles for changelog and blockquotes."
+- update core components
+> Updates the core QuickBox Pro installation script and related documentation.
+> - Updates the 'qb' script to point the API check to central API endpoints.
+> - Updates translation files for multiple languages to reference GitHub issue tracker.
+> - Updates 'quickbox_install' script and improves 'mflibs' installation.
+> - Updates the news script to use github for the news output."
