@@ -1,14 +1,11 @@
 #!/bin/bash
 declare -g title text
 title="An update is available!"
-text="## 3.2.1.0146 (2025-05-31)
+text="## 3.2.1.0151 (2025-06-01)
 
 ### 🐛 Fixes (1 changes)
 
-- update additional resources to point to new GitHub workflows
-> Points source links to the official GitHub repositories, ensuring continued access to resources and updates.
-> This also includes updating the version numbers of several core files.
-
-### 🧪 Tweaks (1 changes)
-
-- minor padding insert to changelog commit message bodies"
+- installer: 'mktemp' usage and add 'jq' to script dependencies
+> - Corrected mktemp usage to avoid invalid template error by removing full path from the template argument.
+> - Changed template to 'mflibsfetch-XXXXXXXX' to clearly identify purpose.
+> - Added 'jq' to script_dependencies to ensure JSON parsing works for fetched metadata."
