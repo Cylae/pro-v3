@@ -1,9 +1,9 @@
 #!/bin/bash
 declare -g title text
 title="An update is available!"
-text="## 3.2.1.0152 (2025-06-01)
+text="## 3.2.1.0158 (2025-06-01)
 
-### 🐛 Fixes (1 changes)
+### ♨️ Hotfixes (1 changes)
 
-- installer: add 'unzip' dependency
-> Adds 'unzip' as a dependency to the installation script, ensuring it's available for archive extraction operations."
+- 'quickbox_install' and 'mflibs' retrieval
+> This change enhances the reliability of 'mflibs' installation by fetching a zipped archive and passing additional sanity checks."
