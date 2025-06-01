@@ -1,11 +1,9 @@
 #!/bin/bash
 declare -g title text
 title="An update is available!"
-text="## 3.2.1.0151 (2025-06-01)
+text="## 3.2.1.0152 (2025-06-01)
 
 ### 🐛 Fixes (1 changes)
 
-- installer: 'mktemp' usage and add 'jq' to script dependencies
-> - Corrected mktemp usage to avoid invalid template error by removing full path from the template argument.
-> - Changed template to 'mflibsfetch-XXXXXXXX' to clearly identify purpose.
-> - Added 'jq' to script_dependencies to ensure JSON parsing works for fetched metadata."
+- installer: add 'unzip' dependency
+> Adds 'unzip' as a dependency to the installation script, ensuring it's available for archive extraction operations."
