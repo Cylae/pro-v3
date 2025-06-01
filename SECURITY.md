@@ -1,47 +1,48 @@
 # Security Policy
 
-The following security policy covers the QuickBox Pro lineage of software.
+This security policy applies to the QuickBox Pro suite of software hosted under the [QuickBox GitHub organization](https://github.com/QuickBox).
+
+---
 
 ## Supported Versions
 
-Any security reports and subsequent patches are posted upstream on a rolling commit 
-basis covering recent and latest versions as they are released.
+Security reports and subsequent patches are issued on a rolling basis. All active development versions receive security updates as soon as possible after a vulnerability is confirmed.
 
 ---
 
 ## Reporting a Vulnerability
 
-Security is of the highest importance and all security vulnerabilities or suspected 
-security vulnerabilities should be reported to QuickBox.IO privately, to minimize attacks 
-against current users of QuickBox before they are fixed. Vulnerabilities will be 
-investigated and patched on the next patch (or minor) release as soon as possible. 
-This information could be kept entirely internal to the project.
+Security is a top priority. If you discover a vulnerability or suspect a potential security issue in QuickBox Pro, **please report it directly and privately** via email:
 
-If you know of a publicly disclosed security vulnerability for QuickBox Pro, 
-please IMMEDIATELY contact sec@quickbox.io, or **create a [private issue within our GitLab](https://lab.quickbox.io/QuickBox/pro-v3/-/issues)**
-to inform the QuickBox.IO Development Team.
+📧 **sec@quickbox.io**
 
-*IMPORTANT: Do not file public issues on our GitLab for security vulnerabilities*
+Do **not** open public GitHub issues to report security vulnerabilities.
 
-Please report (suspected) security vulnerabilities to sec@quickbox.io. 
-You will receive a response from us within 48 hours. If the issue is confirmed, 
-we will release a patch as soon as possible depending on complexity but 
-historically within a few days.
+Once received, I will, under good faith, take the following actions:
+
+- Acknowledge the report within 72 hours.
+- Investigate and confirm the issue.
+- Patch the vulnerability in the next patch (or minor) release, typically within a few days depending on severity and complexity.
 
 ---
 
-## Proposed Email and/or Private Issue Content
+## What to Include in Your Report
 
-Provide a descriptive subject line and in the body of the email include the following information:
+To help us quickly assess and respond to your report, please include:
 
-* Basic identity information, such as your name and your affiliation or company.
-* Detailed steps to reproduce the vulnerability.
-* Description of the effects of the vulnerability on QuickBox and the related hardware and software configurations, so that the QuickBox Team can reproduce it.
-* How the vulnerability affects QuickBox usage and an estimation of the attack surface, if there is one.
-* List other projects or dependencies that were used in conjunction with QuickBox to produce the vulnerability.
+- A clear and descriptive subject line.
+- Your name and affiliation or company (if applicable).
+- Steps to reproduce the issue.
+- Description of the vulnerability's impact on QuickBox and any relevant hardware/software configurations.
+- How it affects QuickBox usage and any estimated attack surface.
+- Any other software or dependencies involved in triggering the vulnerability.
 
 ---
 
-## Preferred Languages
+## Preferred Language
 
-We prefer all communications to be in English.
+All security correspondence should be in English.
+
+---
+
+Thank you for helping to keep QuickBox secure.
