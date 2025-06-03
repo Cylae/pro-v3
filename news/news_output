@@ -1,25 +1,8 @@
 #!/bin/bash
 declare -g title text
 title="An update is available!"
-text="## 3.2.1.0203 (2025-06-03)
+text="## 3.2.1.0218 (2025-06-03)
 
-### ✨ Enhancements (2 changes)
+### 🐛 Fixes (1 changes)
 
-- set 'at' and 'speedtest-cli' to base dependencies array on main installer
-- rutorrent: set 'geoip2' as the geo manage plugin rather than base 'geoip'
-
-### 🐛 Fixes (5 changes)
-
-- correction to jellyseerr install output access message
-- improved 'nvm' install for jellyseerr discovery and improved verbosity
-- 'update|fix version': add legacy repo detection
-- adds missing 'qb-vnstat' binary symlink in the main quickbox_installer
-- UI: improves dashboard logo handling for themes
-> Refactors the dashboard logo logic to simplify theme-specific overrides.
-> This change streamlines the way the dashboard logo is displayed, particularly when theme-specific customization's are applied. It introduces a more direct approach to handle logo variations based on the active theme, improving maintainability and reducing code duplication.
-> The logic now prioritizes theme-based logo overrides only when the default logo is in use, ensuring a consistent user experience across
-> different themes.
-
-### 🧪 Tweaks (1 changes)
-
-- better dynamic temp building on emby build and update"
+- improve the reliability of Node.js version management in Jellyseerr build"
