@@ -1,0 +1,39 @@
+--- a/js/ui.js
+
++++ b/js/ui.js
+
+@@ -83,6 +83,14 @@
+
+                 flm.Refresh();
+             }
+         }
++    };
++
++    // Force override to disable 'showhidden' globally at runtime
++    this.settings.getSettingValue = function (name) {
++        if (name === 'showhidden') return false;
++        return $type(theWebUI.settings["webui.flm.settings." + name])
++            ? theWebUI.settings["webui.flm.settings." + name]
++            : this.defaults[name];
+     };
+ 
+     this.console = {
+
+--- a/views/settings-pane.twig
+
++++ b/views/settings-pane.twig
+
+@@ -10,10 +10,8 @@
+
+                        value="{{ opts.histpath }}"/>
+             </div>
+             <div class="col-12 col-md-6">
+-                <input type="checkbox" name="flm-settings-opt-showhidden"
+-                       id="flm-settings-opt-showhidden" {{ (opts.showhidden) ? 'checked': '' }}
+-                       value="{{ opts.showhidden }}"/>
+-                <label for="flm-settings-opt-showhidden">Show hidden files</label>
++            {# Show Hidden checkbox disabled by patch #}
++            <input type="hidden" name="flm-settings-opt-showhidden" id="flm-settings-opt-showhidden" value="0"/>
+             </div>
+             <div class="col-12 col-md-6">
+                 <input type="checkbox" name="flm-settings-opt-logActions"
