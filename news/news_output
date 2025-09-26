@@ -1,52 +1,138 @@
 #!/bin/bash
 declare -g title text
 title="An update is available!"
-text="## 3.2.1.0562 (2025-06-24)
+text="## QuickBox Pro v3.2.2.0221
 
-### ✨ Enhancements (9 changes)
+### 🧩 New Features (11)
+- '0a3c74b' feat: integrate WSDashboard plugin with custom branding and process management
+- '1a6e90c' feat: enhanced Let's Encrypt DNS challenge and UI
+- '2016212' feat: integrate WSDashboard plugin with custom branding and process management
+- '2587696' feat(dashboard): implement comprehensive demo mode support
+- '2cdd211' feat: add new CLI translation keys for WSDashboard health monitoring
+- '5df6fec' feat: enhance dashboard widgets with improved UI and functionality
+- '662f264' feat: add WSDashboard integration to Package Management Center and Service Control widgets
+- '7047592' feat: add new CLI translation keys for WSDashboard health monitoring
+- 'a8a10f5' feat: enhance dashboard widgets with improved UI and functionality
+- 'b4db889' feat(deluge): prefer deluge-headless packages per '2.2.0'
+- 'e3144d6' feat(emby): add safe backup/restore during updates and config permissions
 
-- core: set beta env to default to verbosity
-- phpmyadmin: specify the mysql user, password, and host through CLI arguments
-> Allows the user to specify the mysql user, password, and host through CLI arguments. The update process now preserves the existing blowfish secret during the upgrade.
-- core: 'qb news' to show output per channel (beta v stable)
-- implement release::resolver for ttyd on main installer
-- update all translation files for new '--ombi2mysql' conversion feature
-> - Added localized strings to support the new '--ombi2mysql' CLI flag
-> - Ensures consistent messaging across all supported languages
-> - Related to the SQLite to MySQL migration for Ombi
-- Ombi: implement '--ombi2mysql' flag for updater
-> This implements a custom function that integrates Ombi's 'ombi_sqlite_mysql' script to convert databases from default sqlite to mysql. Useful for larger installs handling multiple users and hundreds to thousands of requests.
-> Satisfies FR: https://github.com/QuickBox/pro-v3/issues/2
-- UI: apply tooltip positioning logic to configurations page
-- UI: ensure correct tooltip positioning in DataTables
-> Fixes an issue where tooltips in the Service Control Panel were misaligned after scrolling or pagination. Tooltips are now initialized with proper boundary and container context after DOM rendering.
-- improvements to release resolver
-> - This change includes modifications to the software release resolver, improving asset selection by prioritizing more common architectures and filtering out unwanted types.
-> - It also adds enhanced debugging output for compiled package downloads.
+### ✨ Enhancements (20)
+- '00ec0d3' enh: Update WSDashboard branding in service control list widget
+- '035d0dd' enh(emby): add install/restore messaging and ensure https/certificate handling in updates
+- '099be00' enh(rtorrent): update rtorrent script to support '0.16.0' as default
+- '0bcf5ae' enh(assets): improve FilePond plugin CSS styling and hide credits
+- '0bf4d5e' enh: QB Log Miner improved formatting and automation
+- '15e0373' enh(dashboard): add 'rtorrent160' support in dashboard components
+- '1b5ea9d' enh: improve service control list widget with enhanced WSD integration
+- '1d85b74' enh(dashboard): improve accessibility and add WSD health check integration
+- '21d8c50' enhancement: update main dashboard functionality and API
+- '291f7d9' enh: update software system and management
+- '3384e8d' enh: improve WSDashboard URL validation and application username handling
+- '384b768' enh(software): add UMask=0002 to systemd services for improved permission handling
+- '389b74b' enh(dashboard): improve disk data widget formatting and code structure
+- '3fd03b0' enh: UI: enhanced Let's Encrypt certificate management per SSL-Control page
+- '40699d3' enh: add clipboard copy functionality to WSD port field in service control card
+- '4128d72' enhancement: update software installation scripts and configurations
+- '43ec369' enh: consolidate author metadata and add WSD health check integration to developer scripts
+- '44c08e7' enh(dashboard): enhance SSL certificate installation with improved DNS credential processing
+- '489089b' enh: improve WSDashboard URL validation and application username handling
+- '59ae473' enh: improve WSDashboard service health checks and cleanup permissions logic
 
-### 🐛 Fixes (4 changes)
+### 🐛 Bug Fixes (20)
+- '060f7b4' fix(dashboard): detect ZNC active state safely (demo-mode + systemd fallback)
+- '07582cc' fix(wsd): disable SSL verification for self-signed certificates in API connections
+- '0814cc6' fix(deluge): use '/usr/local/bin' for deluge systemd units
+- '0e434f2' fix(wsd): preserve resumed sessions and improve DB action logging
+- '0e8d705' fix(openvpn): resolve HMAC authentication mismatch with tls-crypt wrapper
+- '11b2ac4' fix(software): normalize HTTPS tag and remove wsdashboard auto-install hooks
+- '1ac896b' fix(wireguard): resolve argument processing issue with noc and other flags
+- '1c177c5' fix(ci): Handle shallow clones in changelog generation
+- '285f3ca' fix(software): remove wsdashboard auto-install hooks
+- '42c28f2' fix(wsdashboard): correct permission handling and path references
+- '4ab85f7' fix(wireguard): improve configuration handling and add resolvconf dependency
+- '5d6d573' fix(dashboard): filter out server-handled sessions in 'fetchEnrichedSessions'
+- '68970ac' fix: improve temp transcode path handling and database operations in WSD functions
+- '68e392a' fix(rtorrent): tighten version check
+- '6ba6587' fix: core: Update beta pull resource to maintain tag relation to version
+- '7442855' fix: validates DNS provider for Let's Encrypt
+- '7989a09' fix(database): robust DB backend detection and duplicate pruning; update docs
+- '846417f' fix(wsdashboard): correct permission handling and path references
+- '863b05d' fix: multiple-apps: fixes removal
+- '86d89d8' fix(dashboard): add "Fix Database" help entry and English string
 
-- core: correction to 'iris' MOTD conf placement on update
-> This corrects an issue where the old MOTD config is not properly updated with the newest GitHub repo assets and links
-- core: better support for '--self' resolving tar archives on release resolution
-- Emby|Jellyfin: correction to initialized port setting on install
-- Kavita: update install and config scripts for more stable builds
+### 🔧 Code Refactoring (5)
+- '3182b98' refactor(znc): make build/update idempotent and use private install prefix
+- '6186fb9' refactor(deluge): modernize package/update/remove flows with _qb_* helpers
+- 'c7dac96' refactor(dashboard): modernize PHP code formatting and structure
+- 'c868bbf' refactor: optimize Package Management Center widget for improved performance
+- '2fdc4ea' refactor: optimize Package Management Center widget for improved performance
 
-### 🧪 Tweaks (5 changes)
+### 🧪 Tweaks & Minor Changes (6)
+- 'edb3122' tweak(dashboard): improve service versioning layout in streaming dashboard
+- '243fca6' tweak: update version numbers across documentation and configuration files
+- 'cc4f06a' tweak: update project configuration and documentation
+- '3e7db6a' tweak: update dashboard assets and styling
+- 'e921cd6' tweak: UI: Improves source notifications
+- '382deea' tweak: UI: improved aesthetic on alerts/side-nav font display
 
-- implement more logic naming on phpmyadmin flags
-> This changes the named flags for use on the phpmyadmin installer to be better suited for phpmyadmin reference and usage (_not to be confused with mysql database connection values_). '--pma-user', '--pma-pass', and '--pma-host'
-- UI: aesthetic padding adjustments on update page
-- UI: set channel alias to 'sudo::patcher'
-> This update helps determine the proper utility to fire for updating. Beta v Stable.
-- core: refactored download process
-> Updates the QuickBox Pro download process for both 'fix' and 'update' operations to utilize a central release proxy, enhancing and simplifying distribution.
-- updated betapull script for QB Pro v3
-> Refactors betapull script to streamline the beta testing environment setup for QuickBox Pro v3.
-> This commit involves:
-> - Improvements to initial dependency checks and installation
-> - Updates to core Python modules and lshell
-> - Enhancement in database updates and configuration
-> - Service file updates and permission configurations
-> - Removal of deprecated files
-> - Changes in the way quickbox is downloaded (secure archive method)"
+### 📚 Documentation (4)
+- '01c6075' docs: update WSDashboard documentation version and content
+- 'a640218' docs: update comprehensive documentation across all modules
+- 'cf6a79f' docs: update WSDashboard documentation version and content
+- 'f04529e' docs: update comprehensive documentation across all modules
+
+### 🌍 Translations (20)
+- '99de8b0' translation(help_manual): update help manual and CLI core translations across locales
+- 'c6b8731' translation(dashboard/help): update help_manual across locales
+- '20b396c' translation(cli): add misc install operation headers for software module (locales)
+- '2b762ce' translation(cli): add misc install operation headers for software module (en)
+- '83fd885' translation(help_manual): add 'FIX_DATABASE' key across locales
+- '14c716e' translation(cli): Update CLI help text for rtorrent default version change
+- '4551a76' translation: add version rollback confirmation text
+- 'cb4f487' translation: synchronize CLI software translations across all locales
+- '23dfd36' translation: Improve CLI language files across all supported locales
+- '4ed0f2d' translation: update CLI language system across all supported locales
+- '45d0b60' translation: add missing directory warning message for WSDashboard
+- 'aa87846' translation: synchronize CLI software translations across all locales
+- 'afccd94' translation: Improve CLI language files across all supported locales
+- 'ccdb41b' translation: update CLI language system across all supported locales
+- 'afcf75a' translation: add missing directory warning message for WSDashboard
+- 'd60bc2d' translation: add WSDashboard description translations across all supported locales
+- '7e9d19b' translation: update English language documentation and help content
+- '7fe4f44' translation: update language bridge files for modular system
+- 'bf3a995' translation: implement modular dashboard language system
+- '7ee3799' translation: implement modular language system for CLI and dashboard
+
+### 🔧 Maintenance (6)
+- '19df565' chore(release/workflow): additional prep for upcoming stable release packages
+- '3d02651' chore: update meta across project files
+- '4d34238' chore: update project metadata files
+- '6fd2e1b' chore: remove obsolete test files
+- '83efd8a' chore(release/workflow): tighten workflow shell/options, propagate release metadata, and update system script metadata
+- 'aadce27' chore(znc): align docs/version and service ExecStart path
+
+### 🎨 Style Changes (4)
+- '0be3f5f' style(dashboard/help): update help content and localized help_manual entries across locales
+- 'f4147fc' style(ui): update main dashboard CSS to remove overly rounded edges on badges
+- '168ae86' style(dashboard): update main CSS styling
+- '6945567' style(dashboard): clean up unnecessary blank lines in getLastAction API
+
+### 📝 General Changes (10)
+- '33e3265'  dev: improvements to production workflow
+- 'bdd25ed'  skip ci automated: quality tasks
+- 'bbb64d4'  skip ci automated: quality tasks
+- '257297c'  dev: minor versioning boost
+- '32b483e'  skip ci automated: quality tasks
+- '63e3116'  skip ci automated: quality tasks
+- 'e82774e'  dev: minor versioning boost
+- '02b86ee'  dev: enhance CI/CD pipeline resilience and artifact handling
+- '22d10a1'  skip ci automated: quality tasks
+- '172f97b'  skip ci automated: quality tasks
+
+---
+
+**Release Information**:
+- **📅 Release Date**: 2025-09-26
+- **🏷️ Version**: 3.2.2.0221
+- **📋 Previous Version**: 3.2.1.0562
+- **🔄 Release Type**: production"
