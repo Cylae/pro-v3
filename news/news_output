@@ -58,7 +58,7 @@ text="## QuickBox Pro v3.2.2.0221
 - '7989a09' fix(database): robust DB backend detection and duplicate pruning; update docs
 - '846417f' fix(wsdashboard): correct permission handling and path references
 - '863b05d' fix: multiple-apps: fixes removal
-- '86d89d8' fix(dashboard): add "Fix Database" help entry and English string
+- '86d89d8' fix(dashboard): add 'Fix Database' help entry and English string
 
 ### 🔧 Code Refactoring (5)
 - '3182b98' refactor(znc): make build/update idempotent and use private install prefix
