@@ -1,138 +1,62 @@
 #!/bin/bash
 declare -g title text
 title="An update is available!"
-text="## QuickBox Pro v3.2.2.0221
+text="## QuickBox Pro v3.2.2.0740
 
-### 🧩 New Features (11)
-- '0a3c74b' feat: integrate WSDashboard plugin with custom branding and process management
-- '1a6e90c' feat: enhanced Let's Encrypt DNS challenge and UI
-- '2016212' feat: integrate WSDashboard plugin with custom branding and process management
-- '2587696' feat(dashboard): implement comprehensive demo mode support
-- '2cdd211' feat: add new CLI translation keys for WSDashboard health monitoring
-- '5df6fec' feat: enhance dashboard widgets with improved UI and functionality
-- '662f264' feat: add WSDashboard integration to Package Management Center and Service Control widgets
-- '7047592' feat: add new CLI translation keys for WSDashboard health monitoring
-- 'a8a10f5' feat: enhance dashboard widgets with improved UI and functionality
-- 'b4db889' feat(deluge): prefer deluge-headless packages per '2.2.0'
-- 'e3144d6' feat(emby): add safe backup/restore during updates and config permissions
+### 🧩 New Features (9)
+- '0cc8b31' feat(dashboard): add username field for per-user SSL certificate installation
+- '1178e6a' feat(setup): add beta installation mode with Trixie support
+- '2eae0ab' feat(software/lecert): add PFX auto-update system for Emby and Jellyfin
+- '3893694' feat(lang/cli): add domain-aware Plex access message
+- '3999189' feat(software/emby): auto-convert domain SSL certificates to PFX format
+- '3d090a1' feat(setup): download QuickBox payloads via central proxy with robust validation and telemetry
+- '61dfabf' feat(software/lecert): integrate PFX tracking and Jellyfin PFX support
+- '80e897f' feat(software/lecert): add user resolution for multi-user certificate configuration
+- '8ea6c47' feat(software): update setup & software wrappers for domain and lecert handling
 
-### ✨ Enhancements (20)
-- '00ec0d3' enh: Update WSDashboard branding in service control list widget
-- '035d0dd' enh(emby): add install/restore messaging and ensure https/certificate handling in updates
-- '099be00' enh(rtorrent): update rtorrent script to support '0.16.0' as default
-- '0bcf5ae' enh(assets): improve FilePond plugin CSS styling and hide credits
-- '0bf4d5e' enh: QB Log Miner improved formatting and automation
-- '15e0373' enh(dashboard): add 'rtorrent160' support in dashboard components
-- '1b5ea9d' enh: improve service control list widget with enhanced WSD integration
-- '1d85b74' enh(dashboard): improve accessibility and add WSD health check integration
-- '21d8c50' enhancement: update main dashboard functionality and API
-- '291f7d9' enh: update software system and management
-- '3384e8d' enh: improve WSDashboard URL validation and application username handling
-- '384b768' enh(software): add UMask=0002 to systemd services for improved permission handling
-- '389b74b' enh(dashboard): improve disk data widget formatting and code structure
-- '3fd03b0' enh: UI: enhanced Let's Encrypt certificate management per SSL-Control page
-- '40699d3' enh: add clipboard copy functionality to WSD port field in service control card
-- '4128d72' enhancement: update software installation scripts and configurations
-- '43ec369' enh: consolidate author metadata and add WSD health check integration to developer scripts
-- '44c08e7' enh(dashboard): enhance SSL certificate installation with improved DNS credential processing
-- '489089b' enh: improve WSDashboard URL validation and application username handling
-- '59ae473' enh: improve WSDashboard service health checks and cleanup permissions logic
+### 🐛 Bug Fixes (9)
+- '1b53e88' fix(setup): improve zip extraction detection and prevent premature dashboard removal
+- '3e3b0a7' fix(system/software): resolve beta branch detection and array expansion
+- '41353a3' fix(software): unify beta branch detection across torrent clients
+- '44d03e9' fix(dashboard): remove Netdata version conditionals for swap metrics
+- '7ef5633' fix(cli): allow per-domain lecert installs and forward domain flag
+- '86fa27e' fix(software/deluge): unify beta detection and update Python for Trixie
+- 'a7874b4' fix(cli): prevent accidental per-user re-installs by deterministically resolving username and id
+- 'bf9704b' fix(dashboard/login): prevent AJAX redirect failures
+- 'de6c81b' fix(software/netdata): use sysctl.d for Debian 13 and improve trap handling
 
-### 🐛 Bug Fixes (20)
-- '060f7b4' fix(dashboard): detect ZNC active state safely (demo-mode + systemd fallback)
-- '07582cc' fix(wsd): disable SSL verification for self-signed certificates in API connections
-- '0814cc6' fix(deluge): use '/usr/local/bin' for deluge systemd units
-- '0e434f2' fix(wsd): preserve resumed sessions and improve DB action logging
-- '0e8d705' fix(openvpn): resolve HMAC authentication mismatch with tls-crypt wrapper
-- '11b2ac4' fix(software): normalize HTTPS tag and remove wsdashboard auto-install hooks
-- '1ac896b' fix(wireguard): resolve argument processing issue with noc and other flags
-- '1c177c5' fix(ci): Handle shallow clones in changelog generation
-- '285f3ca' fix(software): remove wsdashboard auto-install hooks
-- '42c28f2' fix(wsdashboard): correct permission handling and path references
-- '4ab85f7' fix(wireguard): improve configuration handling and add resolvconf dependency
-- '5d6d573' fix(dashboard): filter out server-handled sessions in 'fetchEnrichedSessions'
-- '68970ac' fix: improve temp transcode path handling and database operations in WSD functions
-- '68e392a' fix(rtorrent): tighten version check
-- '6ba6587' fix: core: Update beta pull resource to maintain tag relation to version
-- '7442855' fix: validates DNS provider for Let's Encrypt
-- '7989a09' fix(database): robust DB backend detection and duplicate pruning; update docs
-- '846417f' fix(wsdashboard): correct permission handling and path references
-- '863b05d' fix: multiple-apps: fixes removal
-- '86d89d8' fix(dashboard): add 'Fix Database' help entry and English string
+### 🔧 Code Refactoring (3)
+- '3746ba1' refactor(software/netdata): improve user/group setup and remove legacy sources
+- '6d56ce9' refactor(dashboard): relax DNS credential parsing and add Plex helper flow
+- 'a0f1782' refactor(wsdaemon): unify language helper and add WSD access message
 
-### 🔧 Code Refactoring (5)
-- '3182b98' refactor(znc): make build/update idempotent and use private install prefix
-- '6186fb9' refactor(deluge): modernize package/update/remove flows with _qb_* helpers
-- 'c7dac96' refactor(dashboard): modernize PHP code formatting and structure
-- 'c868bbf' refactor: optimize Package Management Center widget for improved performance
-- '2fdc4ea' refactor: optimize Package Management Center widget for improved performance
+### 📚 Documentation (1)
+- '1706a28' docs: update lecert and emby documentation for user-specific configuration
 
-### 🧪 Tweaks & Minor Changes (6)
-- 'edb3122' tweak(dashboard): improve service versioning layout in streaming dashboard
-- '243fca6' tweak: update version numbers across documentation and configuration files
-- 'cc4f06a' tweak: update project configuration and documentation
-- '3e7db6a' tweak: update dashboard assets and styling
-- 'e921cd6' tweak: UI: Improves source notifications
-- '382deea' tweak: UI: improved aesthetic on alerts/side-nav font display
+### 🌍 Translations (5)
+- 'f3a385c' translation(cli): add PFX auto-update and service-specific SSL messages
+- '5469a6e' translation(cli): add certificate conversion message across all locales
+- '77fad6b' translation(cli): add SSL certificate user resolution messages across all locales
+- 'b6b8ef2' translation(dashboard): add username optional field labels across all locales
+- 'e9ce7e9' translation(cli): normalize formatting for software access messages across locales
 
-### 📚 Documentation (4)
-- '01c6075' docs: update WSDashboard documentation version and content
-- 'a640218' docs: update comprehensive documentation across all modules
-- 'cf6a79f' docs: update WSDashboard documentation version and content
-- 'f04529e' docs: update comprehensive documentation across all modules
+### 🔧 Maintenance (4)
+- '3755816' chore: sync project metadata with PFX automation features
+- '3bfa13d' chore(lang/ssl): normalize indentation and logging in lecert messages
+- '411f60f' chore: sync automated documentation with source changes
+- '5f2f40f' chore(docs): update installation and software guidance related to Plex/lecert changes
 
-### 🌍 Translations (20)
-- '99de8b0' translation(help_manual): update help manual and CLI core translations across locales
-- 'c6b8731' translation(dashboard/help): update help_manual across locales
-- '20b396c' translation(cli): add misc install operation headers for software module (locales)
-- '2b762ce' translation(cli): add misc install operation headers for software module (en)
-- '83fd885' translation(help_manual): add 'FIX_DATABASE' key across locales
-- '14c716e' translation(cli): Update CLI help text for rtorrent default version change
-- '4551a76' translation: add version rollback confirmation text
-- 'cb4f487' translation: synchronize CLI software translations across all locales
-- '23dfd36' translation: Improve CLI language files across all supported locales
-- '4ed0f2d' translation: update CLI language system across all supported locales
-- '45d0b60' translation: add missing directory warning message for WSDashboard
-- 'aa87846' translation: synchronize CLI software translations across all locales
-- 'afccd94' translation: Improve CLI language files across all supported locales
-- 'ccdb41b' translation: update CLI language system across all supported locales
-- 'afcf75a' translation: add missing directory warning message for WSDashboard
-- 'd60bc2d' translation: add WSDashboard description translations across all supported locales
-- '7e9d19b' translation: update English language documentation and help content
-- '7fe4f44' translation: update language bridge files for modular system
-- 'bf3a995' translation: implement modular dashboard language system
-- '7ee3799' translation: implement modular language system for CLI and dashboard
-
-### 🔧 Maintenance (6)
-- '19df565' chore(release/workflow): additional prep for upcoming stable release packages
-- '3d02651' chore: update meta across project files
-- '4d34238' chore: update project metadata files
-- '6fd2e1b' chore: remove obsolete test files
-- '83efd8a' chore(release/workflow): tighten workflow shell/options, propagate release metadata, and update system script metadata
-- 'aadce27' chore(znc): align docs/version and service ExecStart path
-
-### 🎨 Style Changes (4)
-- '0be3f5f' style(dashboard/help): update help content and localized help_manual entries across locales
-- 'f4147fc' style(ui): update main dashboard CSS to remove overly rounded edges on badges
-- '168ae86' style(dashboard): update main CSS styling
-- '6945567' style(dashboard): clean up unnecessary blank lines in getLastAction API
-
-### 📝 General Changes (10)
-- '33e3265'  dev: improvements to production workflow
-- 'bdd25ed'  skip ci automated: quality tasks
-- 'bbb64d4'  skip ci automated: quality tasks
-- '257297c'  dev: minor versioning boost
-- '32b483e'  skip ci automated: quality tasks
-- '63e3116'  skip ci automated: quality tasks
-- 'e82774e'  dev: minor versioning boost
-- '02b86ee'  dev: enhance CI/CD pipeline resilience and artifact handling
-- '22d10a1'  skip ci automated: quality tasks
-- '172f97b'  skip ci automated: quality tasks
+### 📝 General Changes (5)
+- '764cd48'  skip ci automated: quality tasks
+- '2e3a296'  dev refactor: restore standard sed and adopt PSR-2 formatting
+- '834b370'  skip ci automated: quality tasks
+- '0e749ed'  skip ci automated: quality tasks
+- '0afc601'  skip ci[meta] version 3.2.2.0221 released upstream - eta ~10 minutes
 
 ---
 
 **Release Information**:
-- **📅 Release Date**: 2025-09-26
-- **🏷️ Version**: 3.2.2.0221
-- **📋 Previous Version**: 3.2.1.0562
+- **📅 Release Date**: 2025-10-03
+- **🏷️ Version**: 3.2.2.0740
+- **📋 Previous Version**: 3.2.2.0221
 - **🔄 Release Type**: production"
