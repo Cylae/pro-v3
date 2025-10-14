@@ -1,60 +1,42 @@
 #!/bin/bash
 declare -g title text
 title="An update is available!"
-text="## QuickBox Pro v3.2.2.1146
+text="## QuickBox Pro v3.2.2.1277
 
-### 🧩 New Features (7)
-- '13ad32f' feat(betapull): add distro-aware mcrypt install and idempotent extension setup
-- '36fc1d9' feat(software/prowlarr): add Debian 11 SQLite compatibility patch
-- '861a10a' feat(software/radarr): add Debian 11 SQLite compatibility patch
-- 'ae8b1f2' feat(software/btsync): add dynamic package URL resolution helper
-- 'c255bef' feat(jellyseerr): switch upstream to seerr-team and resolve release version
-- 'cb4f4df' feat(airsonic): support DEB822 .sources format and clean legacy java.list on remove
-- 'd7770ed' feat(dashboard/api): add device disconnect tracking endpoints
+### 🧩 New Features (2)
+- '389c23e' feat(dashboard/pmc): add mobile responsive layout for package manager tables
+- '705bc53' feat(dashboard/wsd): add device icon assets for client identification
 
-### ✨ Enhancements (2)
-- '025f57e' enh(plex): add Debian 13 DEB822 sources format support
-- '0da9816' enh(software/quota): add service reload after quota installation
+### 🐛 Bug Fixes (9)
+- '05b1104' fix(dashboard/datatable): remove letter-spacing from table cells for 'Space Mono' font
+- '0ac934e' fix(dashboard/wireguard): add mobile responsive table styles for WireGuard modals
+- '1726d0f' fix(i18n/fr): escape apostrophes in strings embedded in JavaScript contexts
+- '2621007' fix(i18n/cli): add missing 'nvpn_conf_gen' help text across all CLI locales
+- '30c644c' fix(software/prowlarr,radarr): ensure Bullseye SQLite patch applies on old installs during updates
+- '57e34b5' fix(software/plex): ensure install directory exists before configuration
+- '58850a1' fix(dashboard/srvctrl): use 'systemctl' for reliable Plex service detection
+- '8476098' fix(software/sabnzbd): add Debian 13 compatibility with DEB822 format support
+- 'fe9c924' fix(i18n/wireguard): add missing PostUp/PostDown translation keys for WireGuard modals
 
-### 🐛 Bug Fixes (16)
-- '19563ba' fix(config/db): add missing auto-backup configuration option
-- '25aff65' fix(system): add distro-aware mcrypt install and idempotent extension guard
-- '29433de' fix(system): add safe mcrypt install checks and distro-aware handling
-- '3d7cbcd' fix(setup): improve betapull download flow with VFI check and telemetry
-- '5922443' fix(software/rtorrent): comment out incompatible log output for v0.16.0
-- '61e9717' fix(software/netdata): resolve argument quoting in installation call
-- '6209185' fix(system): support Debian 13 apt sources and provide 'libcurl.so.3' shim
-- '6e02e04' fix(setup/qbpro_v3): improve cleanup and exit code handling
-- 'af2dd45' fix(config/nginx): drop deprecated TLSv1.1 protocol support
-- 'afb3020' fix(qb): allow '--4k' installs to bypass user/install guard
-- 'b0268dd' fix(software/kavita): wait for 'appsettings.json' before configuration
-- 'bc50c4d' fix(system): declare 'distro' variable globally across environment scripts
-- 'cb72891' fix(software/wsdashboard): move nginx reload to completion phase
-- 'd673b83' fix(software/filebrowser): enforce 12-character minimum password requirement
-- 'ecd211a' fix(config/emby): comment redundant Connection header in subdomain config
-- 'f22e7c9' fix(software): upgrade Python requirement to 3.11 for modern compatibility
+### 🔧 Code Refactoring (3)
+- '0909376' refactor(i18n/fr): apply consistent apostrophe escaping and remove duplicate example
+- 'c0081a2' refactor(dashboard/srvctrl): extract inline styles to external CSS file
+- '825478c' refactor(software/qbittorrent): relocate 'version_lt' helper to improve readability
 
-### 🌍 Translations (1)
-- '006a66c' translation(cli): correct WSDashboard port variable reference
+### 🎨 Style Changes (2)
+- 'a24fef7' style(dashboard/sweetalert): apply CSS custom property theme refinements
+- '470ff85' style(dashboard): update font family to Space Mono throughout main stylesheet
 
-### 🔧 Maintenance (3)
-- '447c495' chore(developer_resources): rebuild encrypted binaries and compiled assets
-- '4bd142f' chore(developer_resources): remove obsolete report deck - moved assets
-- 'f56c53c' chore(dashboard): stack component discovery numbers
-
-### 🎨 Style Changes (3)
-- '2fb78dc' style(dashboard): normalize changelog font stack and tidy inline CSS
-- 'd5dfb7b' style(dashboard): tidy inline page CSS
-- 'bb71b94' style(dashboard): replace 'Quicksand' with 'Space Mono' font
-
-### 📝 General Changes (2)
-- 'dceecf2'  skip ci automated: quality tasks
-- '14c8705'  skip ci[meta] version 3.2.2.0741 released upstream - eta ~10 minutes
+### 📝 General Changes (4)
+- '75f4271'  skip ci automated: quality tasks
+- '1a3aade'  skip ci automated: quality tasks
+- 'c0437db'  skip ci automated: quality tasks
+- '2d713ef'  skip ci[meta] version 3.2.2.1146 released upstream - eta ~10 minutes
 
 ---
 
 **Release Information**:
-- **📅 Release Date**: 2025-10-11
-- **🏷️ Version**: 3.2.2.1146
-- **📋 Previous Version**: 3.2.2.0741
+- **📅 Release Date**: 2025-10-14
+- **🏷️ Version**: 3.2.2.1277
+- **📋 Previous Version**: 3.2.2.1146
 - **🔄 Release Type**: production"
