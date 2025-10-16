@@ -1,32 +1,34 @@
 #!/bin/bash
 declare -g title text
 title="An update is available!"
-text="## QuickBox Pro v3.2.2.1318
+text="## QuickBox Pro v3.2.2.1485
 
-### 🧩 New Features (2)
-- '125e757' feat(dashboard/wsd): add database management API endpoints and utilities
-- 'ae61b97' feat(dashboard): add special handling for Plex service status check
+### 🧩 New Features (4)
+- '0d5b2b2' feat(dev-tools): add self-update logic to betapull script
+- '1e007b4' feat(dashboard/wsd): implement session-based GeoIP caching to reduce API calls
+- '8cc1729' feat(i18n/cli): sync software translation keys across all locales
+- 'd26cc40' feat(i18n/cli): add Python fix and pip update translation keys
 
-### 🐛 Bug Fixes (2)
-- '568f49b' fix(dashboard/configs): allow private IP addresses in webroot URL validation
-- 'd218215' fix(software/prowlarr): force IPv4 for wget downloads to prevent connectivity issues
+### 🔧 Code Refactoring (5)
+- '64de18a' refactor(system): remove deprecated WSD auto-provisioning logic from update/fix
+- '05f542c' refactor(dev-tools): modernize betapull Python version support with PEP 668
+- 'c9197c2' refactor(dashboard): remove legacy MaxMind library in favor of MMDB direct reads
+- 'e7c1d00' refactor(system): modernize Python install with PEP 668 support and dual-version strategy
+- '8f46700' refactor(software/python): migrate bazarr and seedcross to Python 3.11
 
-### 🔧 Code Refactoring (1)
-- '1af948d' refactor(system): remove deprecated output command from mcrypt installation
-
-### 🎨 Style Changes (1)
-- '25b87cf' style(dashboard): apply CSS custom property refinements for theming
+### 🔧 Maintenance (1)
+- '60cdbda' chore(build): recompile developer binaries and add build artifacts
 
 ### 📝 General Changes (4)
-- '0f53d75'  skip ci automated: quality tasks
-- '4302a80'  skip ci automated: quality tasks
-- '529089b'  skip ci automated: quality tasks
-- '4556470'  skip ci[meta] version 3.2.2.1277 released upstream - eta ~10 minutes
+- 'a73c6b5'  skip ci automated: quality tasks
+- '8359d82'  dev(chore): minor cleanup of test utilities
+- 'dc721e5'  dev(docs): update documentation and add development notes
+- '4fe2b7d'  skip ci[meta] version 3.2.2.1318 released upstream - eta ~10 minutes
 
 ---
 
 **Release Information**:
-- **📅 Release Date**: 2025-10-14
-- **🏷️ Version**: 3.2.2.1318
-- **📋 Previous Version**: 3.2.2.1277
+- **📅 Release Date**: 2025-10-16
+- **🏷️ Version**: 3.2.2.1485
+- **📋 Previous Version**: 3.2.2.1318
 - **🔄 Release Type**: production"
