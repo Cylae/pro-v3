@@ -1,34 +1,63 @@
 #!/bin/bash
 declare -g title text
 title="An update is available!"
-text="## QuickBox Pro v3.2.2.1485
+text="## QuickBox Pro v3.2.2.1819
 
-### 🧩 New Features (4)
-- '0d5b2b2' feat(dev-tools): add self-update logic to betapull script
-- '1e007b4' feat(dashboard/wsd): implement session-based GeoIP caching to reduce API calls
-- '8cc1729' feat(i18n/cli): sync software translation keys across all locales
-- 'd26cc40' feat(i18n/cli): add Python fix and pip update translation keys
+### 🧩 New Features (7)
+- '0488009' feat(i18n/cli): add pip update translation keys for optimized functions
+- '3d4c1d1' feat(system): integrate MySQL to MariaDB migration into system utilities
+- '5ada64f' feat(software): add rTorrent '0.16.2' support and enforce Debian 13 compatibility
+- '854bcdb' feat(i18n/cli): add mariadb command translation keys
+- 'a361238' feat(setup): enable Debian Trixie support for stable installations
+- 'd9605e7' feat(database): add MySQL Community to MariaDB migration with full i18n support
+- 'f3e9ab1' feat(dashboard): add rTorrent '0.16.2' support and improve Debian version detection
 
-### 🔧 Code Refactoring (5)
-- '64de18a' refactor(system): remove deprecated WSD auto-provisioning logic from update/fix
-- '05f542c' refactor(dev-tools): modernize betapull Python version support with PEP 668
-- 'c9197c2' refactor(dashboard): remove legacy MaxMind library in favor of MMDB direct reads
-- 'e7c1d00' refactor(system): modernize Python install with PEP 668 support and dual-version strategy
-- '8f46700' refactor(software/python): migrate bazarr and seedcross to Python 3.11
+### 🐛 Bug Fixes (9)
+- '2944d01' fix(seedcross): improve seedcross nginx HTTPS proxy and logout handling
+- '5faf642' fix(system): update 'fix'/'update' scripts to early source lang files
+- '7624dac' fix(dashboard): cast DB_PORT to integer in activity widget
+- 'af24885' fix(deluge): modernize Python version support and enable daemon mode
+- 'b03f5e9' fix(dashboard): resolve streaming app username resolution in package updates
+- 'c8dc1ff' fix(dashboard): resolve duplicate named parameters in PDO prepared statements
+- 'ca96123' fix(dashboard): correct netdata disk mount endpoint for '/home' installs
+- 'd6551b0' fix(pip): filter pip-freeze to package==version
+- 'e232985' fix(system): migrate deprecated 'mysql' command to 'mariadb'
 
-### 🔧 Maintenance (1)
-- '60cdbda' chore(build): recompile developer binaries and add build artifacts
+### 🔧 Code Refactoring (19)
+- '7182a07' refactor(dev-tools): replace local migration with shared database helper
+- '2957668' refactor(dev-tools): migrate 'mysql' command to 'mariadb' in betapull
+- 'ea53f0e' refactor(system): migrate deprecated 'mysql' service to 'mariadb' in system scripts
+- '0fef1cf' refactor(dashboard): restructure PMC widget and add rTorrent '0.16.2' support
+- '770d408' refactor(software): migrate ombi and phpmyadmin to 'mariadb' command
+- 'e534b8a' refactor(config): update database schemas for enhanced software tracking
+- '1036e43' refactor(dashboard): optimize MariaDB connections with enhanced PDO attributes
+- 'd4d2e7c' refactor(config): migrate deprecated 'mysql' command to 'mariadb' in system utilities
+- '68c6cc3' refactor(duplicati): enhance package support with Debian 13 compatibility and reliability improvements
+- '487c534' refactor(software): update tautulli Python version handling for Debian Trixie
+- 'd417929' refactor(software): update overseerr to Python 3.11
+- 'f8626a4' refactor(system): optimize 'pip::update' functions across all scripts
+- 'c5af9e5' refactor(system): sanitize pip freeze and add '--no-deps' install + 'PEP 668' support
+- '6a14877' refactor(dashboard): optimize WSD functions and update modal CSS calls
+- '9f882b1' refactor(dev-tools): modernize devpull Python management with PEP 668 and dual-version support
+- '586c13e' refactor(system): enhance Python installation with functional validation and reinstall support
+- '87271dc' refactor(config/deluge): modernize systemd service units
+- '717a7f2' refactor(dev-tools): migrate betapull Python installations to compiled packages
+- '1b46612' refactor(system): migrate Python installations to compiled packages
+
+### 🎨 Style Changes (2)
+- '6ad1191' style(dashboard): add device info modal CSS for WSD plugin
+- 'bf6afe1' style(dashboard): normalize indentation in system-index view
 
 ### 📝 General Changes (4)
-- 'a73c6b5'  skip ci automated: quality tasks
-- '8359d82'  dev(chore): minor cleanup of test utilities
-- 'dc721e5'  dev(docs): update documentation and add development notes
-- '4fe2b7d'  skip ci[meta] version 3.2.2.1318 released upstream - eta ~10 minutes
+- '816db76'  skip ci automated: quality tasks
+- '8547a71'  skip ci automated: quality tasks
+- 'e6a1472'  skip ci automated: quality tasks
+- '0331fbd'  skip ci[meta] version 3.2.2.1485 released upstream - eta ~10 minutes
 
 ---
 
 **Release Information**:
-- **📅 Release Date**: 2025-10-16
-- **🏷️ Version**: 3.2.2.1485
-- **📋 Previous Version**: 3.2.2.1318
+- **📅 Release Date**: 2025-11-14
+- **🏷️ Version**: 3.2.2.1819
+- **📋 Previous Version**: 3.2.2.1485
 - **🔄 Release Type**: production"
