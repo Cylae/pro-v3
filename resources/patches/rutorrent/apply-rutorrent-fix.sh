@@ -2,8 +2,8 @@
 ################################################################################
 # ruTorrent i8 Detection Fix for rtorrent 0.16.x+
 #
-# This script patches ruTorrent to fix the false "without i8 support" error
-# when using rtorrent 0.16.0 or newer.
+# This script patches ruTorrent to fix compatibility issues with rtorrent 0.16.0+
+# including the false "without i8 support" error and ratio plugin failures.
 #
 # Issue: https://github.com/Novik/ruTorrent/issues/2983
 # Root cause: ruTorrent tests for i8 support using deprecated 'to_kb' command
@@ -150,8 +150,9 @@ if [[ "${DRY_RUN}" == true ]]; then
     echo ""
     echo_info "What would be changed:"
     echo "  • Skip obsolete i8 detection test for rtorrent 0.16.0+ (i8 support is built-in)"
+    echo "  • Fix ratio plugin to use group. prefix with empty string target for 0.16.0+"
     echo "  • Add version detection to handle rtorrent 0.15.x vs 0.16.0+ correctly"
-    echo "  • Fix the false 'without i8 support' error message"
+    echo "  • Fix the false 'without i8 support' error and ratio plugin failures"
     echo ""
     echo_info "To apply the fix for real, run:"
     echo "  sudo $0"
@@ -166,8 +167,9 @@ if grep -q "i8 support detection fix for rtorrent 0.16" "${SETTINGS_FILE}" && \
     echo ""
     echo_info "What was fixed:"
     echo "  • Skipped obsolete i8 detection test for rtorrent 0.16.0+ (i8 support is built-in)"
+    echo "  • Fixed ratio plugin to use group. prefix with empty string target for 0.16.0+"
     echo "  • Added version detection to handle rtorrent 0.15.x vs 0.16.0+ correctly"
-    echo "  • Fixed the false 'without i8 support' error message"
+    echo "  • Fixed the false 'without i8 support' error and ratio plugin failures"
     echo ""
     echo_info "Next steps:"
     echo "  1. Restart your web server:"
