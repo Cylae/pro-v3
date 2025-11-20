@@ -1,6 +1,6 @@
---- settings.php	2025-11-20 15:26:18.420494841 -0600
-+++ settings.php	2025-11-20 15:32:05.839844647 -0600
-@@ -230,64 +230,75 @@
+--- settings.php	2025-11-20 16:02:51.741344762 -0600
++++ settings.php	2025-11-20 16:04:00.893797876 -0600
+@@ -230,65 +230,78 @@
  					$this->apiVersion = $req->val[0];
  			}
  
@@ -23,6 +23,8 @@
 +				$this->badXMLRPCVersion = false;
 +		}
 +
++			if(!$req->fault)
++				$this->badXMLRPCVersion = false;
 +			$req = new rXMLRPCRequest( array(
 +				new rXMLRPCCommand("get_directory"),
 +				new rXMLRPCCommand("get_session"),
@@ -82,16 +84,18 @@
  
 -					if(User::isLocalMode())
 -					{
-+				if(User::isLocalMode())
-+				{
- 	                                        if(!empty($this->session))
- 	                                        {
+-	                                        if(!empty($this->session))
+-	                                        {
 -							$this->started = @filemtime($this->session.'/rtorrent.lock');
 -							if($this->started===false)
 -								$this->started = 0;
 -						}
 -						$id = Utility::getExternal('id');
 -						$req = new rXMLRPCRequest(
++				if(User::isLocalMode())
++				{
++                                        if(!empty($this->session))
++                                        {
 +						$this->started = @filemtime($this->session.'/rtorrent.lock');
 +						if($this->started===false)
 +							$this->started = 0;
@@ -122,7 +126,8 @@
 -					$this->store();
 +					else
 +						$this->idNotFound = true;
-+				}
  				}
++				$this->store();
  			}
  		}
+ 	}
