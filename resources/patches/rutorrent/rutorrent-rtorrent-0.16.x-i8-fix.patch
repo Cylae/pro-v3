@@ -1,9 +1,9 @@
---- settings.php.orig	2025-11-19 00:00:00.000000000 +0000
-+++ settings.php	2025-11-19 00:00:00.000000000 +0000
+--- settings.php.orig	2025-11-20 13:34:27.372890410 -0600
++++ settings.php.new	2025-11-20 13:34:27.372890410 -0600
 @@ -230,7 +230,18 @@
- 			$this->apiVersion = $req->val[0];
- 		}
-
+ 					$this->apiVersion = $req->val[0];
+ 			}
+ 
 -                        $req = new rXMLRPCRequest( new rXMLRPCCommand("to_kb", floatval(1024)) );
 +		// i8 support detection fix for rtorrent 0.16.x+
 +		// rtorrent 0.16.0+ removed deprecated 'to_kb' command, use 'convert.kb' instead
@@ -17,6 +17,6 @@
 +		{
 +			$req = new rXMLRPCRequest( new rXMLRPCCommand("to_kb", floatval(1024)) );
 +		}
- 		if($req->run())
- 		{
- 			if(!$req->fault)
+ 			if($req->run())
+ 			{
+ 				if(!$req->fault)
