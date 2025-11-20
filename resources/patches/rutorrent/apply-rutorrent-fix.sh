@@ -13,8 +13,7 @@
 #   1. Locates your ruTorrent installation
 #   2. Creates backups of settings.php
 #   3. Applies patch to replace 'to_kb' with 'convert.kb' for rtorrent 0.16.0+
-#   4. Falls back to manual AWK-based fix if patch fails
-#   5. Verifies the fix was applied correctly
+#   4. Verifies the fix was applied correctly
 #
 # Usage: sudo ./apply-rutorrent-fix.sh [--dry-run]
 ################################################################################
@@ -78,6 +77,13 @@ if [[ ! -f "${PATCH_FILE}" ]]; then
     exit 1
 fi
 
+# Check if already patched
+if grep -q "i8 support detection fix for rtorrent 0.16" "${SETTINGS_FILE}" 2>/dev/null; then
+    echo_warning "Patch appears to be already applied!"
+    echo_info "Current settings.php already contains the fix."
+    exit 0
+fi
+
 if [[ "${DRY_RUN}" == true ]]; then
     echo_info "Would create backup: ${SETTINGS_FILE}.backup-<timestamp>"
     echo_info "Would check/create: ${SETTINGS_FILE}.backup-original"
@@ -94,80 +100,45 @@ else
     fi
 fi
 
-# Check if already patched
-if grep -q "i8 support detection fix for rtorrent 0.16" "${SETTINGS_FILE}" 2>/dev/null; then
-    echo_warning "Patch appears to be already applied!"
-    read -p "Do you want to re-apply the patch? (y/N): " -n 1 -r
-    echo
-    if [[ ! ${REPLY} =~ ^[Yy]$ ]]; then
-        echo_info "Aborting."
-        exit 0
-    fi
-    # Restore from backup if re-applying
-    echo_info "Restoring original settings.php before re-applying..."
-    if [[ -f "${SETTINGS_FILE}.backup-original" ]]; then
-        cp "${SETTINGS_FILE}.backup-original" "${SETTINGS_FILE}"
-    fi
-fi
-
 # Try to apply patch
 echo_info "Applying patch..."
 cd "${RUTORRENT_PATH}/php"
 
-if patch -p0 --dry-run <"${PATCH_FILE}" >/dev/null 2>&1; then
-    # Dry run successful
-    if [[ "${DRY_RUN}" == true ]]; then
-        echo_success "Patch validation successful! (would apply patch)"
+if [[ "${DRY_RUN}" == true ]]; then
+    if patch -p0 --dry-run < "${PATCH_FILE}" >/dev/null 2>&1; then
+        echo_success "✓ Patch validation successful! (would apply cleanly)"
     else
-        # Apply for real
-        if patch -p0 <"${PATCH_FILE}"; then
-            echo_success "Patch applied successfully!"
-        else
-            echo_error "Failed to apply patch"
-            echo_info "Restoring backup..."
-            cp "${BACKUP_FILE}" "${SETTINGS_FILE}"
-            exit 1
-        fi
+        echo_error "Patch validation failed!"
+        echo ""
+        echo_error "The patch cannot be applied to your settings.php file."
+        echo_info "This could happen if:"
+        echo "  • You have a heavily modified ruTorrent installation"
+        echo "  • Your ruTorrent version is very old or very new"
+        echo "  • The file has already been manually edited"
+        echo ""
+        echo_info "Run without --dry-run to see detailed error output"
+        exit 1
     fi
 else
-    # Patch failed, try manual edit
-    echo_warning "Standard patch failed. Attempting manual fix..."
-
-    # Create temporary file with the fix
-    # More flexible pattern to handle whitespace variations
-    awk '
-    /new rXMLRPCRequest.*new rXMLRPCCommand.*"to_kb".*floatval.*1024/ {
-        print "\t\t// i8 support detection fix for rtorrent 0.16.x+"
-        print "\t\t// rtorrent 0.16.0+ removed deprecated '\''to_kb'\'' command, use '\''convert.kb'\'' instead"
-        print "\t\t// Reference: https://github.com/Novik/ruTorrent/issues/2983"
-        print "\t\tif($this->iVersion >= 0x1000) // rtorrent 0.16.0 and newer"
-        print "\t\t{"
-        print "\t\t\t// convert.kb requires empty string target parameter for global commands in 0.16.0+"
-        print "\t\t\t$req = new rXMLRPCRequest( new rXMLRPCCommand(\"convert.kb\", \"\", floatval(1024)) );"
-        print "\t\t}"
-        print "\t\telse"
-        print "\t\t{"
-        print "\t\t\t$req = new rXMLRPCRequest( new rXMLRPCCommand(\"to_kb\", floatval(1024)) );"
-        print "\t\t}"
-        next
-    }
-    { print }
-    ' "${SETTINGS_FILE}" >"${SETTINGS_FILE}.tmp"
-
-    if [[ -s "${SETTINGS_FILE}.tmp" ]]; then
-        if [[ "${DRY_RUN}" == true ]]; then
-            echo_success "Manual fix validation successful! (would apply fix)"
-            rm -f "${SETTINGS_FILE}.tmp"
-        else
-            mv "${SETTINGS_FILE}.tmp" "${SETTINGS_FILE}"
-            echo_success "Manual fix applied successfully!"
-        fi
+    # Apply patch for real
+    if patch -p0 < "${PATCH_FILE}" 2>&1; then
+        echo_success "✓ Patch applied successfully!"
     else
-        echo_error "Manual fix failed. Restoring backup..."
-        if [[ "${DRY_RUN}" == false ]]; then
-            cp "${BACKUP_FILE}" "${SETTINGS_FILE}"
-        fi
-        rm -f "${SETTINGS_FILE}.tmp"
+        echo_error "Failed to apply patch!"
+        echo ""
+        echo_error "The patch could not be applied to your settings.php file."
+        echo_info "Possible reasons:"
+        echo "  • Your ruTorrent version has a different settings.php structure"
+        echo "  • The file has been heavily customized"
+        echo "  • The line numbers don't match (different ruTorrent version)"
+        echo ""
+        echo_info "Restoring backup..."
+        cp "${BACKUP_FILE}" "${SETTINGS_FILE}"
+        echo_info "Original file restored from: ${BACKUP_FILE}"
+        echo ""
+        echo_error "Please report this issue with:"
+        echo "  • Your ruTorrent version"
+        echo "  • Lines 228-240 of your settings.php: sed -n '228,240p' ${SETTINGS_FILE}"
         exit 1
     fi
 fi
@@ -211,14 +182,10 @@ if grep -q "i8 support detection fix for rtorrent 0.16" "${SETTINGS_FILE}" && \
         echo "  • Original: ${SETTINGS_FILE}.backup-original"
     fi
 else
-    echo_error "Verification failed. Fix may not have been applied correctly."
+    echo_error "Verification failed!"
+    echo_info "The patch appeared to apply but verification checks failed."
     echo_info "Restoring backup..."
     cp "${BACKUP_FILE}" "${SETTINGS_FILE}"
     echo_info "Backup restored from: ${BACKUP_FILE}"
-    echo ""
-    echo_error "Please report this issue with the following information:"
-    echo "  • ruTorrent path: ${RUTORRENT_PATH}"
-    echo "  • Patch file: ${PATCH_FILE}"
-    echo "  • Settings file: ${SETTINGS_FILE}"
     exit 1
 fi
