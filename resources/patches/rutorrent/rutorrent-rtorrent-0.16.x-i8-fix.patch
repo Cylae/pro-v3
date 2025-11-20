@@ -1,0 +1,22 @@
+--- settings.php.orig	2025-11-19 00:00:00.000000000 +0000
++++ settings.php	2025-11-19 00:00:00.000000000 +0000
+@@ -230,7 +230,18 @@
+ 			$this->apiVersion = $req->val[0];
+ 		}
+
+-                        $req = new rXMLRPCRequest( new rXMLRPCCommand("to_kb", floatval(1024)) );
++		// i8 support detection fix for rtorrent 0.16.x+
++		// rtorrent 0.16.0+ removed deprecated 'to_kb' command, use 'convert.kb' instead
++		// Reference: https://github.com/Novik/ruTorrent/issues/2983
++		if($this->iVersion >= 0x1000) // rtorrent 0.16.0 and newer
++		{
++			// convert.kb requires empty string target parameter for global commands in 0.16.0+
++			$req = new rXMLRPCRequest( new rXMLRPCCommand("convert.kb", "", floatval(1024)) );
++		}
++		else
++		{
++			$req = new rXMLRPCRequest( new rXMLRPCCommand("to_kb", floatval(1024)) );
++		}
+ 		if($req->run())
+ 		{
+ 			if(!$req->fault)
