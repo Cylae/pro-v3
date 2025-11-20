@@ -1,13 +1,14 @@
---- settings.php	2025-11-20 14:40:14.870140312 -0600
-+++ settings.php	2025-11-20 14:41:18.012316716 -0600
-@@ -230,7 +230,22 @@
+--- settings.php	2025-11-20 15:26:18.420494841 -0600
++++ settings.php	2025-11-20 15:32:05.839844647 -0600
+@@ -230,64 +230,75 @@
  					$this->apiVersion = $req->val[0];
  			}
  
 -                        $req = new rXMLRPCRequest( new rXMLRPCCommand("to_kb", floatval(1024)) );
+-			if($req->run())
 +		// i8 support detection fix for rtorrent 0.16.x+
 +		// rtorrent 0.16.0+ has i8 support built-in (mandatory, not optional)
-+		// Skip the obsolete to_kb/convert.kb test for 0.16.0+
++		// Skip the obsolete to_kb test for 0.16.0+
 +		// Reference: https://github.com/Novik/ruTorrent/issues/2983
 +		if($this->iVersion >= 0x1000)
 +		{
@@ -21,6 +22,107 @@
 +			if($req->run() && !$req->fault)
 +				$this->badXMLRPCVersion = false;
 +		}
- 			if($req->run())
++
++			$req = new rXMLRPCRequest( array(
++				new rXMLRPCCommand("get_directory"),
++				new rXMLRPCCommand("get_session"),
++				new rXMLRPCCommand("system.library_version"),
++				new rXMLRPCCommand("set_xmlrpc_size_limit",67108863),
++				new rXMLRPCCommand("get_name"),
++				new rXMLRPCCommand("get_port_range"),
++				new rXMLRPCCommand("get_bind"),
++				new rXMLRPCCommand("get_ip"),
++				) );
++			if($req->success())
  			{
- 				if(!$req->fault)
+-				if(!$req->fault)
+-					$this->badXMLRPCVersion = false;
+-				$req = new rXMLRPCRequest( array(
+-					new rXMLRPCCommand("get_directory"),
+-					new rXMLRPCCommand("get_session"),
+-					new rXMLRPCCommand("system.library_version"),
+-					new rXMLRPCCommand("set_xmlrpc_size_limit",67108863),
+-					new rXMLRPCCommand("get_name"),
+-					new rXMLRPCCommand("get_port_range"),
+-					new rXMLRPCCommand("get_bind"),
+-					new rXMLRPCCommand("get_ip"),
+-					) );
+-				if($req->success())
+-				{
+-					$this->directory = $req->val[0];
++				$this->directory = $req->val[0];
+   		        	        $this->session = $req->val[1];
+-					$this->libVersion = $req->val[2];
+-					$this->server = $req->val[4];
+-					$this->portRange = $req->val[5];
+-					$this->port = intval($this->portRange);
+-					$this->bind = $req->val[6];
+-					$this->ip = $req->val[7];
++				$this->libVersion = $req->val[2];
++				$this->server = $req->val[4];
++				$this->portRange = $req->val[5];
++				$this->port = intval($this->portRange);
++				$this->bind = $req->val[6];
++				$this->ip = $req->val[7];
+ 
+-					if($this->iVersion>=0x809)
+-					{
+-						$req = new rXMLRPCRequest( new rXMLRPCCommand("network.listen.port") );
+-						$req->important = false;
+-						if($req->success())
+-							$this->port = intval($req->val[0]);
+-					}
++				if($this->iVersion>=0x809)
++				{
++					$req = new rXMLRPCRequest( new rXMLRPCCommand("network.listen.port") );
++					$req->important = false;
++					if($req->success())
++						$this->port = intval($req->val[0]);
++				}
+ 
+-					if(User::isLocalMode())
+-					{
++				if(User::isLocalMode())
++				{
+ 	                                        if(!empty($this->session))
+ 	                                        {
+-							$this->started = @filemtime($this->session.'/rtorrent.lock');
+-							if($this->started===false)
+-								$this->started = 0;
+-						}
+-						$id = Utility::getExternal('id');
+-						$req = new rXMLRPCRequest(
++						$this->started = @filemtime($this->session.'/rtorrent.lock');
++						if($this->started===false)
++							$this->started = 0;
++					}
++					$id = Utility::getExternal('id');
++					$req = new rXMLRPCRequest(
+         						new rXMLRPCCommand("execute_capture",array("sh","-c",$id." -u ; ".$id." -G ; echo ~ ")));
+-						if($req->run() && !$req->fault && (($line=explode("\n",$req->val[0]))!==false) && (count($line)>2))
+-						{
+-							$this->uid = intval(trim($line[0]));
+-							$this->gid = explode(' ',trim($line[1]));
+-							$this->home = trim($line[2]);
+-							if(!empty($this->directory) &&
+-								($this->directory[0]=='~'))
+-								$this->directory = $this->home.substr($this->directory,1);	
+-						}
+-						else
+-							$this->idNotFound = true;
++					if($req->run() && !$req->fault && (($line=explode("\n",$req->val[0]))!==false) && (count($line)>2))
++					{
++						$this->uid = intval(trim($line[0]));
++						$this->gid = explode(' ',trim($line[1]));
++						$this->home = trim($line[2]);
++						if(!empty($this->directory) &&
++							($this->directory[0]=='~'))
++							$this->directory = $this->home.substr($this->directory,1);	
+ 					}
+-					$this->store();
++					else
++						$this->idNotFound = true;
++				}
+ 				}
+ 			}
+ 		}
