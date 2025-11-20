@@ -1,21 +1,25 @@
---- settings.php	2025-11-20 13:34:27.372890410 -0600
-+++ settings.php	2025-11-20 13:34:27.372890410 -0600
-@@ -230,7 +230,18 @@
+--- settings.php	2025-11-20 14:40:14.870140312 -0600
++++ settings.php	2025-11-20 14:41:18.012316716 -0600
+@@ -230,7 +230,22 @@
  					$this->apiVersion = $req->val[0];
  			}
  
 -                        $req = new rXMLRPCRequest( new rXMLRPCCommand("to_kb", floatval(1024)) );
 +		// i8 support detection fix for rtorrent 0.16.x+
-+		// rtorrent 0.16.0+ removed deprecated 'to_kb' command, use 'convert.kb' instead
++		// rtorrent 0.16.0+ has i8 support built-in (mandatory, not optional)
++		// Skip the obsolete to_kb/convert.kb test for 0.16.0+
 +		// Reference: https://github.com/Novik/ruTorrent/issues/2983
-+		if($this->iVersion >= 0x1000) // rtorrent 0.16.0 and newer
++		if($this->iVersion >= 0x1000)
 +		{
-+			// convert.kb requires empty string target parameter for global commands in 0.16.0+
-+			$req = new rXMLRPCRequest( new rXMLRPCCommand("convert.kb", "", floatval(1024)) );
++			// rtorrent 0.16.0+ always has i8 support - skip test
++			$this->badXMLRPCVersion = false;
 +		}
 +		else
 +		{
++			// rtorrent 0.15.x and older - use deprecated to_kb test
 +			$req = new rXMLRPCRequest( new rXMLRPCCommand("to_kb", floatval(1024)) );
++			if($req->run() && !$req->fault)
++				$this->badXMLRPCVersion = false;
 +		}
  			if($req->run())
  			{
