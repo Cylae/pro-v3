@@ -6,13 +6,14 @@
 # when using rtorrent 0.16.0 or newer.
 #
 # Issue: https://github.com/Novik/ruTorrent/issues/2983
-# Root cause: ruTorrent uses deprecated 'to_kb' command which was removed
-#             in rtorrent 0.16.0. The replacement is 'convert.kb'.
+# Root cause: ruTorrent tests for i8 support using deprecated 'to_kb' command
+#             which was removed in rtorrent 0.16.0. rtorrent 0.16.0+ has i8
+#             support built-in (mandatory), so the test is obsolete.
 #
 # What this script does:
 #   1. Locates your ruTorrent installation
 #   2. Creates backups of settings.php
-#   3. Applies patch to replace 'to_kb' with 'convert.kb' for rtorrent 0.16.0+
+#   3. Applies patch to skip obsolete i8 test for rtorrent 0.16.0+
 #   4. Verifies the fix was applied correctly
 #
 # Usage: sudo ./apply-rutorrent-fix.sh [--dry-run]
@@ -148,8 +149,8 @@ if [[ "${DRY_RUN}" == true ]]; then
     echo_success "✓ Dry run completed successfully!"
     echo ""
     echo_info "What would be changed:"
-    echo "  • Replace deprecated 'to_kb' command with 'convert.kb' for rtorrent 0.16.0+"
-    echo "  • Add version detection to use correct command based on rtorrent version"
+    echo "  • Skip obsolete i8 detection test for rtorrent 0.16.0+ (i8 support is built-in)"
+    echo "  • Add version detection to handle rtorrent 0.15.x vs 0.16.0+ correctly"
     echo "  • Fix the false 'without i8 support' error message"
     echo ""
     echo_info "To apply the fix for real, run:"
@@ -160,13 +161,13 @@ fi
 # Verify the fix
 echo_info "Verifying patch application..."
 if grep -q "i8 support detection fix for rtorrent 0.16" "${SETTINGS_FILE}" && \
-   grep -q "convert.kb" "${SETTINGS_FILE}"; then
+   grep -q "badXMLRPCVersion = false" "${SETTINGS_FILE}"; then
     echo_success "✓ Patch successfully applied and verified!"
     echo ""
     echo_info "What was fixed:"
-    echo "  • Replaced deprecated 'to_kb' command with 'convert.kb' for rtorrent 0.16.0+"
-    echo "  • Added version detection to use correct command based on rtorrent version"
-    echo "  • Fixes the false 'without i8 support' error message"
+    echo "  • Skipped obsolete i8 detection test for rtorrent 0.16.0+ (i8 support is built-in)"
+    echo "  • Added version detection to handle rtorrent 0.15.x vs 0.16.0+ correctly"
+    echo "  • Fixed the false 'without i8 support' error message"
     echo ""
     echo_info "Next steps:"
     echo "  1. Restart your web server:"
