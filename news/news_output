@@ -1,29 +1,21 @@
 #!/bin/bash
 declare -g title text
 title="An update is available!"
-text="## QuickBox Pro v3.2.2.1872
+text="## QuickBox Pro v3.2.2.1874
 
-### 🧩 New Features (1)
-- '000d9e5' feat(software/jellyseerr): add python 3.11 support
+### 🐛 Bug Fixes (1)
+- 'd2e36d3' fix(bin): skip SSL verification in API status check
 
-### 🐛 Bug Fixes (6)
-- '2278765' fix(installer): correction to FanyIndex setup on initial QB installer
-- '2f8f415' fix(dashboard): improve OpenVPN service detection and path handling
-- '87f88a9' fix(dashboard): preserve API key when deactivating license
-- '8fc9b6d' fix(bin): add network timeouts to API calls in 'qb' binary
-- '99cf360' fix(system): add network timeouts to API calls in 'manage' script
-- 'a60e68e' fix(system): restore unquoted argument expansion in 'manage' script
-
-### 🔧 Code Refactoring (1)
-- 'a5b5054' refactor(system): modularize manage script to resolve ARG_MAX limits
+### ♨️ Critical Fixes (1)
+- 'd8f5c48' hotfix(system): enable execution of modularized 'dbSettings' module
 
 ### 📝 General Changes (1)
-- '2145f58'  skip ci[meta] version 3.2.2.1857 released upstream - eta ~10 minutes
+- '09f8f75'  skip ci[meta] version 3.2.2.1872 released upstream - eta ~10 minutes
 
 ---
 
 **Release Information**:
 - **📅 Release Date**: 2025-11-22
-- **🏷️ Version**: 3.2.2.1872
-- **📋 Previous Version**: 3.2.2.1857
+- **🏷️ Version**: 3.2.2.1874
+- **📋 Previous Version**: 3.2.2.1872
 - **🔄 Release Type**: production"
