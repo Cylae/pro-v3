@@ -1,34 +1,41 @@
 #!/bin/bash
 declare -g title text
 title="An update is available!"
-text="## QuickBox Pro v3.2.2.1857
+text="## QuickBox Pro v3.2.2.2158
 
-### 🧩 New Features (3)
-- '40524dc' feat(software/flexget): add python 3.9 to 3.11 migration support
-- '5cb67c1' feat(i18n/cli): add missing_arguments error translation for 'dns-credentials'
-- 'c070dfe' feat(i18n/cli): add python 3.9 to 3.11 migration translations
+### 🧩 New Features (9)
+- '3b6dbda' feat(api): add V3 API support with dual-endpoint routing
+- '57b0899' feat(setup): prompt for DNS credentials during install
+- '71db8d4' feat(system/modules): add modularized manage settings modules
+- '8a7ef06' feat(software/overseerr): reuse saved DNS credentials
+- 'aa3a04f' feat(setup): add dns challenge support
+- 'c31a3b1' feat(setup): add V3 API activation support to installer
+- 'c5a3e07' feat(software/jellyseerr): auto use DNS challenge when available
+- 'cc1f311' feat(bin/qb): capture domains before option parsing
+- 'd55130d' feat(system/modules): add DNS settings management module
+
+### ✨ Enhancements (1)
+- 'a519361' enh(config): update database schema and iris module for V3 API
 
 ### 🐛 Bug Fixes (9)
-- '164dc13' fix(dashboard): correction to critical bug in autoloader blocking PMC view for non-admin users
-- '3ddb832' fix(software/rutorrent): ensure plugin configs copied to production path
-- '507b0e6' fix(system): remove deprecated maxmind directory during cleanup
-- '5965368' fix(system): quote '$@' parameters in 'fix' script to prevent argument overflow
-- '6402220' fix(bin): fix 'dns-test' to detect 'SAVED_' prefixed credentials
-- '6620b51' fix(wsd): remove deprecated 'requiredFiles' checks on parent function analysis
-- '6bb8fb7' fix(dashboard): remove deprecated group requirement for software management visibility
-- 'd329de1' fix(dashboard): remove deprecated requirement checks to MaxMind
-- 'ec3a7f1' fix(system): quote '$@' parameters in 'manage' script to prevent argument overflow
+- '027d95e' fix(system): avoid redundant api reactivation
+- '0923a40' fix(software/deluge): remove erroneous local APT repo creation
+- '481ebad' fix(system/manage): prefer stored api_ip for heartbeat
+- '54ed986' fix(system): add Debian 13 Trixie compatibility fixes
+- '86549f9' fix(bin/qb): harden API verification
+- '94b5792' fix(system/manage): align legacy license display
+- 'c437a70' fix(system/manage): avoid cleanup exit during API activation
+- 'c84d5f8' fix(system/manage): resolve jq argjson error in heartbeat user JSON builder
+- 'caba845' fix(software/plex): pass username to lecert for subdomain nginx config
 
-### 🔧 Code Refactoring (1)
-- '5da78e1' refactor(mflibs): improve template install function error handling
-
-### 📝 General Changes (1)
-- '4039bee'  skip ci[meta] version 3.2.2.1835 released upstream - eta ~10 minutes
+### 📝 General Changes (2)
+- 'a7013c7'  dev(chore): resource sync
+- '39d3b39'  skip ci[meta] version 3.2.2.1874 released upstream - eta ~10 minutes
 
 ---
 
 **Release Information**:
-- **📅 Release Date**: 2025-11-21
-- **🏷️ Version**: 3.2.2.1857
-- **📋 Previous Version**: 3.2.2.1835
+- **📅 Release Date**: 2025-12-12
+- **🏷️ Version**: 3.2.2.2158
+- **📋 Previous Version**: 3.2.2.1874
 - **🔄 Release Type**: production"
