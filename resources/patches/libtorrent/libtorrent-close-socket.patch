@@ -1,14 +1,14 @@
 diff -uNr libtorrent-0.16.5.orig/src/net/curl_socket.cc libtorrent-0.16.5.mod/src/net/curl_socket.cc
 --- libtorrent-0.16.5.orig/src/net/curl_socket.cc	2025-12-02 11:15:46.000000000 -0600
 +++ libtorrent-0.16.5.mod/src/net/curl_socket.cc	2025-12-16 17:10:30.926068033 -0600
-@@ -20,11 +20,17 @@
+@@ -20,11 +20,18 @@
      if (socket == nullptr)
        return 0;
- 
+
 -    // We also probably need the special code here as we're not
 -    // guaranteed that the fd will be closed, afaik.
 -    socket->close();
-+    // libcurl is telling us to stop polling this fd. We don't close here; the
++    // CURL_CLOSESOCKET_FIX: libcurl is telling us to stop polling this fd. We don't close here; the
 +    // CLOSESOCKET callback will perform the actual close so we only tear down
 +    // once. Best-effort remove from epoll to avoid stale watchers.
 +    this_thread::poll()->remove_read(socket);
@@ -18,28 +18,28 @@ diff -uNr libtorrent-0.16.5.orig/src/net/curl_socket.cc libtorrent-0.16.5.mod/sr
 +    // Clear association from libcurl to avoid reuse after we fully close in
 +    // the CLOSESOCKET callback.
 +    curl_multi_assign(stack->handle(), fd, nullptr);
- 
+
 -    delete socket;
      return 0;
    }
- 
-@@ -35,7 +41,8 @@
+
+@@ -35,7 +42,8 @@
      // TODO: Assign nullptr here....
      // TODO: Might not be getting removed ? verify fd, etc.
- 
+
 -    socket = new CurlSocket(fd, stack);
 +      socket = new CurlSocket(fd, stack);
 +      stack->track_socket(fd, socket);
      curl_multi_assign(stack->handle(), fd, socket);
- 
+
      this_thread::poll()->open(socket);
-@@ -69,9 +76,19 @@
+@@ -69,9 +77,19 @@
  void
  CurlSocket::close() {
    if (m_fileDesc == -1)
 -    throw internal_error("CurlSocket::close() m_fileDesc == -1.");
 +    return;
- 
+
 -  this_thread::poll()->remove_and_close(this);
 +  try {
 +    this_thread::poll()->remove_and_close(this);
@@ -52,33 +52,35 @@ diff -uNr libtorrent-0.16.5.orig/src/net/curl_socket.cc libtorrent-0.16.5.mod/sr
 +    } catch (...) {
 +    }
 +  }
- 
+
    m_stack = nullptr;
    m_fileDesc = -1;
 diff -uNr libtorrent-0.16.5.orig/src/net/curl_stack.cc libtorrent-0.16.5.mod/src/net/curl_stack.cc
 --- libtorrent-0.16.5.orig/src/net/curl_stack.cc	2025-12-02 11:15:46.000000000 -0600
 +++ libtorrent-0.16.5.mod/src/net/curl_stack.cc	2025-12-16 17:09:05.598778985 -0600
-@@ -5,6 +5,7 @@
+@@ -5,6 +5,8 @@
  #include <algorithm>
  #include <cassert>
  #include <curl/multi.h>
++#include <mutex>
 +#include "torrent/net/poll.h"
- 
+
  #include "net/curl_get.h"
  #include "net/curl_socket.h"
-@@ -29,6 +30,55 @@
+@@ -29,6 +31,56 @@
    curl_multi_setopt(m_handle, CURLMOPT_MAX_TOTAL_CONNECTIONS, m_max_total_connections);
  }
- 
+
++// CURL_CLOSESOCKET_FIX: Track sockets to ensure proper cleanup
 +void
 +CurlStack::track_socket(curl_socket_t fd, CurlSocket* socket) {
-+  auto guard = std::scoped_lock(m_mutex);
++  std::scoped_lock guard(m_mutex);
 +  m_sockets[fd] = socket;
 +}
 +
 +CurlSocket*
 +CurlStack::take_socket(curl_socket_t fd) {
-+  auto guard = std::scoped_lock(m_mutex);
++  std::scoped_lock guard(m_mutex);
 +  auto itr = m_sockets.find(fd);
 +  if (itr == m_sockets.end())
 +    return nullptr;
@@ -122,45 +124,47 @@ diff -uNr libtorrent-0.16.5.orig/src/net/curl_stack.cc libtorrent-0.16.5.mod/src
  CurlStack::~CurlStack() {
    assert(!is_running() && "CurlStack::~CurlStack() called while still running.");
  }
-@@ -124,6 +174,10 @@
+@@ -124,6 +176,10 @@
      curl_easy_setopt(curl_get->handle_unsafe(), CURLOPT_SSL_VERIFYPEER, m_ssl_verify_peer ? 1l : 0l);
      curl_easy_setopt(curl_get->handle_unsafe(), CURLOPT_DNS_CACHE_TIMEOUT, m_dns_timeout);
- 
+
 +    // Ensure libcurl notifies us before it closes or reuses sockets so we can unregister from poll.
 +    curl_easy_setopt(curl_get->handle_unsafe(), CURLOPT_CLOSESOCKETFUNCTION, &CurlStack::close_socket);
 +    curl_easy_setopt(curl_get->handle_unsafe(), CURLOPT_CLOSESOCKETDATA, this);
 +
      base_type::push_back(curl_get);
- 
+
      curl_get->activate_unsafe();
 diff -uNr libtorrent-0.16.5.orig/src/net/curl_stack.h libtorrent-0.16.5.mod/src/net/curl_stack.h
 --- libtorrent-0.16.5.orig/src/net/curl_stack.h	2025-12-02 11:15:46.000000000 -0600
 +++ libtorrent-0.16.5.mod/src/net/curl_stack.h	2025-12-16 17:08:40.356179507 -0600
-@@ -6,6 +6,7 @@
+@@ -6,6 +6,8 @@
  #include <new>
  #include <string>
  #include <vector>
++#include <mutex>
 +#include <unordered_map>
  #include <curl/curl.h>
- 
+
  #include "torrent/utils/scheduler.h"
-@@ -78,6 +79,10 @@
- 
+@@ -78,6 +80,10 @@
+
    base_type::iterator find_curl_handle(const CURL* curl_handle);
- 
+
 +  void                track_socket(curl_socket_t fd, CurlSocket* socket);
 +  CurlSocket*         take_socket(curl_socket_t fd);
 +  static int          close_socket(void* clientp, curl_socket_t fd);
 +
    static int          set_timeout(void*, long timeout_ms, CurlStack* stack);
- 
+
    void                receive_timeout();
-@@ -106,6 +111,8 @@
+@@ -106,6 +112,9 @@
    bool                m_ssl_verify_host{true};
    bool                m_ssl_verify_peer{true};
    long                m_dns_timeout{60};
 +
++  std::mutex                                     m_mutex;
 +  std::unordered_map<curl_socket_t, CurlSocket*> m_sockets;
  };
- 
+
  inline bool
