@@ -104,14 +104,16 @@ CurlStack::close_socket(void* clientp, curl_socket_t fd) {
 
      // We also probably need the special code here as we're not
      // guaranteed that the fd will be closed, afaik.
-     stack->take_socket(fd); // CURL_CLOSESOCKET_FIX
+    auto* tracked = stack->take_socket(fd); // CURL_CLOSESOCKET_FIX
+    if (tracked == nullptr)
+      return 0;
 
-     socket->close();
+    this_thread::poll()->remove_and_close(tracked);
 
-     // Clear association from libcurl to avoid reuse after close.
-     curl_multi_assign(stack->handle(), fd, nullptr);
+    // Clear association from libcurl to avoid reuse after close.
+    curl_multi_assign(stack->handle(), fd, nullptr);
 
-     delete socket;
+    delete tracked;
      return 0;
    }
 @@
