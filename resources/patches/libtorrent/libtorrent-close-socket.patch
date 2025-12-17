@@ -1,6 +1,6 @@
 diff -urN libtorrent-0.16.5.orig/src/net/curl_socket.cc libtorrent-0.16.5/src/net/curl_socket.cc
---- libtorrent-0.16.5.orig/src/net/curl_socket.cc	2025-12-16 18:43:01.434708248 -0600
-+++ libtorrent-0.16.5/src/net/curl_socket.cc	2025-12-16 18:43:39.060979391 -0600
+--- libtorrent-0.16.5.orig/src/net/curl_socket.cc	2025-12-16 19:15:47.634952174 -0600
++++ libtorrent-0.16.5/src/net/curl_socket.cc	2025-12-16 19:16:17.589990701 -0600
 @@ -20,11 +20,15 @@
      if (socket == nullptr)
        return 0;
@@ -50,9 +50,9 @@ diff -urN libtorrent-0.16.5.orig/src/net/curl_socket.cc libtorrent-0.16.5/src/ne
    m_stack = nullptr;
    m_fileDesc = -1;
 diff -urN libtorrent-0.16.5.orig/src/net/curl_stack.cc libtorrent-0.16.5/src/net/curl_stack.cc
---- libtorrent-0.16.5.orig/src/net/curl_stack.cc	2025-12-16 18:43:01.434708248 -0600
-+++ libtorrent-0.16.5/src/net/curl_stack.cc	2025-12-16 18:44:59.617104943 -0600
-@@ -29,6 +29,49 @@
+--- libtorrent-0.16.5.orig/src/net/curl_stack.cc	2025-12-16 19:15:47.634952174 -0600
++++ libtorrent-0.16.5/src/net/curl_stack.cc	2025-12-16 19:17:15.624101452 -0600
+@@ -29,6 +29,43 @@
    curl_multi_setopt(m_handle, CURLMOPT_MAX_TOTAL_CONNECTIONS, m_max_total_connections);
  }
  
@@ -86,14 +86,8 @@ diff -urN libtorrent-0.16.5.orig/src/net/curl_stack.cc libtorrent-0.16.5/src/net
 +
 +  try {
 +    socket->close();
-+  } catch (const torrent::internal_error&) {
-+    try {
-+      this_thread::poll()->remove_read(socket);
-+      this_thread::poll()->remove_write(socket);
-+      this_thread::poll()->remove_error(socket);
-+    } catch (...) {}
-+    socket->m_stack = nullptr;
-+    socket->m_fileDesc = -1;
++  } catch (...) {
++    // CurlSocket::close() already handles cleanup, just swallow exceptions
 +  }
 +  delete socket;
 +  return 0;
@@ -102,7 +96,7 @@ diff -urN libtorrent-0.16.5.orig/src/net/curl_stack.cc libtorrent-0.16.5/src/net
  CurlStack::~CurlStack() {
    assert(!is_running() && "CurlStack::~CurlStack() called while still running.");
  }
-@@ -124,6 +167,9 @@
+@@ -124,6 +161,9 @@
      curl_easy_setopt(curl_get->handle_unsafe(), CURLOPT_SSL_VERIFYPEER, m_ssl_verify_peer ? 1l : 0l);
      curl_easy_setopt(curl_get->handle_unsafe(), CURLOPT_DNS_CACHE_TIMEOUT, m_dns_timeout);
  
@@ -113,8 +107,8 @@ diff -urN libtorrent-0.16.5.orig/src/net/curl_stack.cc libtorrent-0.16.5/src/net
  
      curl_get->activate_unsafe();
 diff -urN libtorrent-0.16.5.orig/src/net/curl_stack.h libtorrent-0.16.5/src/net/curl_stack.h
---- libtorrent-0.16.5.orig/src/net/curl_stack.h	2025-12-16 18:43:01.434708248 -0600
-+++ libtorrent-0.16.5/src/net/curl_stack.h	2025-12-16 18:44:24.762796162 -0600
+--- libtorrent-0.16.5.orig/src/net/curl_stack.h	2025-12-16 19:15:47.634952174 -0600
++++ libtorrent-0.16.5/src/net/curl_stack.h	2025-12-16 19:16:41.847436724 -0600
 @@ -5,6 +5,7 @@
  #include <mutex>
  #include <new>
@@ -144,8 +138,8 @@ diff -urN libtorrent-0.16.5.orig/src/net/curl_stack.h libtorrent-0.16.5/src/net/
  
  inline bool
 diff -urN libtorrent-0.16.5.orig/src/torrent/net/poll_epoll.cc libtorrent-0.16.5/src/torrent/net/poll_epoll.cc
---- libtorrent-0.16.5.orig/src/torrent/net/poll_epoll.cc	2025-12-16 18:43:01.426708616 -0600
-+++ libtorrent-0.16.5/src/torrent/net/poll_epoll.cc	2025-12-16 18:45:27.107782272 -0600
+--- libtorrent-0.16.5.orig/src/torrent/net/poll_epoll.cc	2025-12-16 19:15:47.630951668 -0600
++++ libtorrent-0.16.5/src/torrent/net/poll_epoll.cc	2025-12-16 19:17:28.983969868 -0600
 @@ -96,8 +96,9 @@
    set_event_mask(event, mask);
  
