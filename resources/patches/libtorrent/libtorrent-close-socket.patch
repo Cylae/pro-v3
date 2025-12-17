@@ -168,3 +168,18 @@ diff -uNr libtorrent-0.16.5.orig/src/net/curl_stack.h libtorrent-0.16.5.mod/src/
  };
 
  inline bool
+diff -uNr libtorrent-0.16.5.orig/src/torrent/net/poll_epoll.cc libtorrent-0.16.5.mod/src/torrent/net/poll_epoll.cc
+--- libtorrent-0.16.5.orig/src/torrent/net/poll_epoll.cc	2025-12-02 11:15:46.000000000 -0600
++++ libtorrent-0.16.5.mod/src/torrent/net/poll_epoll.cc	2025-12-17 00:30:00.000000000 -0600
+@@ -104,8 +104,10 @@
+
+   if (epoll_ctl(m_fd, op, event->file_descriptor(), &e)) {
+-    // Socket was probably already closed. Ignore this.
+-    if (op == EPOLL_CTL_DEL && errno == ENOENT)
++    // EPOLL_FD_RACE_FIX: Socket was probably already closed. Ignore this.
++    // EBADF = fd closed, EPERM = fd reused, ENOENT = fd not registered
++    // See: https://github.com/rakshasa/libtorrent/issues/622
++    if (op == EPOLL_CTL_DEL && (errno == ENOENT || errno == EBADF || errno == EPERM))
+       return;
+
+     // Handle some libcurl/c-ares bugs by retrying once.
