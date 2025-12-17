@@ -134,12 +134,11 @@ diff -urN libtorrent-0.16.5.orig/src/net/curl_stack.h libtorrent-0.16.5/src/net/
    static int          set_timeout(void*, long timeout_ms, CurlStack* stack);
  
    void                receive_timeout();
-@@ -106,6 +111,9 @@
+@@ -106,6 +111,8 @@
    bool                m_ssl_verify_host{true};
    bool                m_ssl_verify_peer{true};
    long                m_dns_timeout{60};
 +
-+  std::mutex m_mutex;
 +  std::unordered_map<curl_socket_t, CurlSocket*> m_sockets;
  };
  
