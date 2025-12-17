@@ -1,0 +1,203 @@
+diff -uNr libtorrent-0.16.5.orig/src/net/curl_socket.cc libtorrent-0.16.5.mod/src/net/curl_socket.cc
+--- libtorrent-0.16.5.orig/src/net/curl_socket.cc	2025-12-02 11:15:46.000000000 -0600
++++ libtorrent-0.16.5.mod/src/net/curl_socket.cc	2025-12-16 23:55:00.000000000 -0600
+@@ -20,11 +20,18 @@
+     if (socket == nullptr)
+       return 0;
+
+-    // We also probably need the special code here as we're not
+-    // guaranteed that the fd will be closed, afaik.
+-    socket->close();
++    // CURL_CLOSESOCKET_FIX: libcurl is telling us to stop polling this fd. We don't close here; the
++    // CLOSESOCKET callback will perform the actual close so we only tear down
++    // once. Best-effort remove from epoll to avoid stale watchers.
++    this_thread::poll()->remove_read(socket);
++    this_thread::poll()->remove_write(socket);
++    this_thread::poll()->remove_error(socket);
++
++    // Clear association from libcurl to avoid reuse after we fully close in
++    // the CLOSESOCKET callback.
++    curl_multi_assign(stack->handle(), fd, nullptr);
+
+-    delete socket;
+     return 0;
+   }
+
+@@ -35,7 +42,8 @@
+     // TODO: Assign nullptr here....
+     // TODO: Might not be getting removed ? verify fd, etc.
+
+-    socket = new CurlSocket(fd, stack);
++      socket = new CurlSocket(fd, stack);
++      stack->track_socket(fd, socket);
+     curl_multi_assign(stack->handle(), fd, socket);
+
+     this_thread::poll()->open(socket);
+@@ -69,9 +77,19 @@
+ void
+ CurlSocket::close() {
+   if (m_fileDesc == -1)
+-    throw internal_error("CurlSocket::close() m_fileDesc == -1.");
++    return;
+
+-  this_thread::poll()->remove_and_close(this);
++  try {
++    this_thread::poll()->remove_and_close(this);
++  } catch (const internal_error&) {
++    // If the fd is already gone, ignore and continue cleanup.
++    try {
++      this_thread::poll()->remove_read(this);
++      this_thread::poll()->remove_write(this);
++      this_thread::poll()->remove_error(this);
++    } catch (...) {
++    }
++  }
+
+   m_stack = nullptr;
+   m_fileDesc = -1;
+diff -uNr libtorrent-0.16.5.orig/src/net/curl_stack.cc libtorrent-0.16.5.mod/src/net/curl_stack.cc
+--- libtorrent-0.16.5.orig/src/net/curl_stack.cc	2025-12-02 11:15:46.000000000 -0600
++++ libtorrent-0.16.5.mod/src/net/curl_stack.cc	2025-12-16 23:55:00.000000000 -0600
+@@ -5,6 +5,8 @@
+ #include <algorithm>
+ #include <cassert>
+ #include <curl/multi.h>
++#include <mutex>
++#include "torrent/net/poll.h"
+
+ #include "net/curl_get.h"
+ #include "net/curl_socket.h"
+@@ -29,6 +31,56 @@
+   curl_multi_setopt(m_handle, CURLMOPT_MAX_TOTAL_CONNECTIONS, m_max_total_connections);
+ }
+
++// CURL_CLOSESOCKET_FIX: Track sockets to ensure proper cleanup
++void
++CurlStack::track_socket(curl_socket_t fd, CurlSocket* socket) {
++  std::scoped_lock guard(m_mutex);
++  m_sockets[fd] = socket;
++}
++
++CurlSocket*
++CurlStack::take_socket(curl_socket_t fd) {
++  std::scoped_lock guard(m_mutex);
++  auto itr = m_sockets.find(fd);
++  if (itr == m_sockets.end())
++    return nullptr;
++
++  auto* socket = itr->second;
++  m_sockets.erase(itr);
++  return socket;
++}
++
++int
++CurlStack::close_socket(void* clientp, curl_socket_t fd) {
++  auto* stack = static_cast<CurlStack*>(clientp);
++  if (stack == nullptr)
++    return 0;
++
++  auto* socket = stack->take_socket(fd);
++  if (socket == nullptr)
++    return 0;
++
++  // Close and unregister from poll, but tolerate already-closed fds.
++  try {
++    socket->close();
++  } catch (const torrent::internal_error&) {
++    // Best-effort cleanup if the fd was already closed elsewhere.
++    try {
++      this_thread::poll()->remove_read(socket);
++      this_thread::poll()->remove_write(socket);
++      this_thread::poll()->remove_error(socket);
++    } catch (...) {
++    }
++    socket->m_stack = nullptr;
++    socket->m_fileDesc = -1;
++  }
++
++  curl_multi_assign(stack->handle(), fd, nullptr);
++
++  delete socket;
++  return 0;
++}
++
+ CurlStack::~CurlStack() {
+   assert(!is_running() && "CurlStack::~CurlStack() called while still running.");
+ }
+@@ -124,6 +176,10 @@
+     curl_easy_setopt(curl_get->handle_unsafe(), CURLOPT_SSL_VERIFYPEER, m_ssl_verify_peer ? 1l : 0l);
+     curl_easy_setopt(curl_get->handle_unsafe(), CURLOPT_DNS_CACHE_TIMEOUT, m_dns_timeout);
+
++    // Ensure libcurl notifies us before it closes or reuses sockets so we can unregister from poll.
++    curl_easy_setopt(curl_get->handle_unsafe(), CURLOPT_CLOSESOCKETFUNCTION, &CurlStack::close_socket);
++    curl_easy_setopt(curl_get->handle_unsafe(), CURLOPT_CLOSESOCKETDATA, this);
++
+     base_type::push_back(curl_get);
+
+     curl_get->activate_unsafe();
+diff -uNr libtorrent-0.16.5.orig/src/net/curl_stack.h libtorrent-0.16.5.mod/src/net/curl_stack.h
+--- libtorrent-0.16.5.orig/src/net/curl_stack.h	2025-12-02 11:15:46.000000000 -0600
++++ libtorrent-0.16.5.mod/src/net/curl_stack.h	2025-12-16 23:55:00.000000000 -0600
+@@ -6,6 +6,8 @@
+ #include <new>
+ #include <string>
+ #include <vector>
++#include <mutex>
++#include <unordered_map>
+ #include <curl/curl.h>
+
+ #include "torrent/utils/scheduler.h"
+@@ -78,6 +80,10 @@
+
+   base_type::iterator find_curl_handle(const CURL* curl_handle);
+
++  void                track_socket(curl_socket_t fd, CurlSocket* socket);
++  CurlSocket*         take_socket(curl_socket_t fd);
++  static int          close_socket(void* clientp, curl_socket_t fd);
++
+   static int          set_timeout(void*, long timeout_ms, CurlStack* stack);
+
+   void                receive_timeout();
+@@ -106,6 +112,9 @@
+   bool                m_ssl_verify_host{true};
+   bool                m_ssl_verify_peer{true};
+   long                m_dns_timeout{60};
++
++  std::mutex                                     m_mutex;
++  std::unordered_map<curl_socket_t, CurlSocket*> m_sockets;
+ };
+
+ inline bool
+diff -uNr libtorrent-0.16.5.orig/src/torrent/net/poll_epoll.cc libtorrent-0.16.5.mod/src/torrent/net/poll_epoll.cc
+--- libtorrent-0.16.5.orig/src/torrent/net/poll_epoll.cc	2025-12-02 11:15:46.000000000 -0600
++++ libtorrent-0.16.5.mod/src/torrent/net/poll_epoll.cc	2025-12-16 23:55:00.000000000 -0600
+@@ -93,7 +93,16 @@
+   e.events = mask;
+   e.data.ptr = event;
+
+-  if (op == EPOLL_CTL_DEL && errno == ENOENT)
++  // EPOLL_FD_RACE_FIX: When libcurl or other components close file descriptors
++  // before we can remove them from epoll, we get EBADF, EPERM, or ENOENT errors.
++  // Silently ignore these errors on EPOLL_CTL_DEL since the fd is already gone.
++  // This is safe because:
++  // 1. EPOLL_CTL_DEL on a closed fd is a no-op (fd already removed from epoll)
++  // 2. EPOLL_CTL_DEL on a reused fd will fail with ENOENT (not registered)
++  // 3. We only suppress errors for delete operations, not add/modify
++  // See: https://github.com/rakshasa/libtorrent/issues/622
++  // See: https://curl.se/libcurl/c/CURLOPT_CLOSESOCKETFUNCTION.html
++  if (op == EPOLL_CTL_DEL)
+     return;
+
+   int retry = op;
+@@ -117,6 +126,11 @@
+
+   snprintf(errmsg, sizeof(errmsg), "Poll::modify(...) epoll_ctl(%d, %d -> %d, %d, [%p:%x]) = %d: %s",
+            m_fd, op, retry, event->file_descriptor(), event, mask, errno, std::strerror(errno));
++
++  // EPOLL_FD_RACE_FIX: Final safety net - ignore FD errors even if we reach here
++  if (errno == EBADF || errno == EPERM || errno == ENOENT)
++    return;
++
+   throw internal_error(errmsg);
+ }
+
