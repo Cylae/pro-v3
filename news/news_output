@@ -1,41 +1,35 @@
 #!/bin/bash
 declare -g title text
 title="An update is available!"
-text="## QuickBox Pro v3.2.2.2158
+text="## QuickBox Pro v3.2.2.2368
 
-### 🧩 New Features (9)
-- '3b6dbda' feat(api): add V3 API support with dual-endpoint routing
-- '57b0899' feat(setup): prompt for DNS credentials during install
-- '71db8d4' feat(system/modules): add modularized manage settings modules
-- '8a7ef06' feat(software/overseerr): reuse saved DNS credentials
-- 'aa3a04f' feat(setup): add dns challenge support
-- 'c31a3b1' feat(setup): add V3 API activation support to installer
-- 'c5a3e07' feat(software/jellyseerr): auto use DNS challenge when available
-- 'cc1f311' feat(bin/qb): capture domains before option parsing
-- 'd55130d' feat(system/modules): add DNS settings management module
+### 🧩 New Features (5)
+- '1debf19' feat(software/rutorrent): auto-apply rtorrent 0.16.x i8 patch
+- '2c0f9cc' feat(system): add v3 license api helpers
+- 'a058ed5' feat(software/rtorrent): default to '0.16.5' and refresh 'help'
+- 'a67ea12' feat(system): expand 'qb user show -u USERNAME' summary
+- 'f6b1f54' feat(software): add rTorrent '0.16.5' support - Add version mapping and package handling for libtorrent165 - Update dashboard package management and control widgets - Extend version exclusion lists across Functions and modal controllers - Sync database schema for new version identifier
 
-### ✨ Enhancements (1)
-- 'a519361' enh(config): update database schema and iris module for V3 API
+### ✨ Enhancements (2)
+- '6a982de' enh(software/rtorrent): updates rTorrent configuration and adds debug service
+- 'd6d6010' enh(config/autocomplete): extend manage software rutorrent flow
 
-### 🐛 Bug Fixes (9)
-- '027d95e' fix(system): avoid redundant api reactivation
-- '0923a40' fix(software/deluge): remove erroneous local APT repo creation
-- '481ebad' fix(system/manage): prefer stored api_ip for heartbeat
-- '54ed986' fix(system): add Debian 13 Trixie compatibility fixes
-- '86549f9' fix(bin/qb): harden API verification
-- '94b5792' fix(system/manage): align legacy license display
-- 'c437a70' fix(system/manage): avoid cleanup exit during API activation
-- 'c84d5f8' fix(system/manage): resolve jq argjson error in heartbeat user JSON builder
-- 'caba845' fix(software/plex): pass username to lecert for subdomain nginx config
+### 🐛 Bug Fixes (4)
+- '62c8a91' fix(system): stabilize generate logging
+- '85a9d78' fix(system): streamline user management flow
+- 'a0156e9' fix(system): enable telemetry heartbeat cron when opted-in
+- 'e6e3c99' fix(software): honor CLI verbose flag
 
-### 📝 General Changes (2)
-- 'a7013c7'  dev(chore): resource sync
-- '39d3b39'  skip ci[meta] version 3.2.2.1874 released upstream - eta ~10 minutes
+### 🔧 Code Refactoring (1)
+- '95e24a6' refactor(system/fix): modularize fix modules
+
+### 📝 General Changes (1)
+- '630f2a2'  skip ci[meta] version 3.2.2.2158 released upstream - eta ~10 minutes
 
 ---
 
 **Release Information**:
-- **📅 Release Date**: 2025-12-12
-- **🏷️ Version**: 3.2.2.2158
-- **📋 Previous Version**: 3.2.2.1874
+- **📅 Release Date**: 2025-12-19
+- **🏷️ Version**: 3.2.2.2368
+- **📋 Previous Version**: 3.2.2.2158
 - **🔄 Release Type**: production"
