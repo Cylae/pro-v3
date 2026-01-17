@@ -1,35 +1,38 @@
 #!/bin/bash
 declare -g title text
 title="An update is available!"
-text="## QuickBox Pro v3.2.2.2368
+text="## QuickBox Pro v3.2.2.2743
 
-### 🧩 New Features (5)
-- '1debf19' feat(software/rutorrent): auto-apply rtorrent 0.16.x i8 patch
-- '2c0f9cc' feat(system): add v3 license api helpers
-- 'a058ed5' feat(software/rtorrent): default to '0.16.5' and refresh 'help'
-- 'a67ea12' feat(system): expand 'qb user show -u USERNAME' summary
-- 'f6b1f54' feat(software): add rTorrent '0.16.5' support - Add version mapping and package handling for libtorrent165 - Update dashboard package management and control widgets - Extend version exclusion lists across Functions and modal controllers - Sync database schema for new version identifier
+### 🧩 New Features (4)
+- '2c1072a' feat(software/flood): add per-user binary and rtorrent shim
+- '3b2b675' feat(dashboard/widgets): refresh stats widgets pipeline
+- '8086403' feat(setup/db): sync qbpro schema dumps
+- 'cee1a2e' feat(software/plex): refresh module and docs
 
-### ✨ Enhancements (2)
-- '6a982de' enh(software/rtorrent): updates rTorrent configuration and adds debug service
-- 'd6d6010' enh(config/autocomplete): extend manage software rutorrent flow
-
-### 🐛 Bug Fixes (4)
-- '62c8a91' fix(system): stabilize generate logging
-- '85a9d78' fix(system): streamline user management flow
-- 'a0156e9' fix(system): enable telemetry heartbeat cron when opted-in
-- 'e6e3c99' fix(software): honor CLI verbose flag
+### 🐛 Bug Fixes (9)
+- '1de4200' fix(software/rutorrent): capture patch errors during apply
+- '25f66ea' fix(software/flood): gate rtorrent shim to '0.16.+'
+- '67a99ea' fix(system/update): fetch changelogs without cache
+- '81b729c' fix(system/software): update version pulling per new meta.json on *arr apps
+- '990d7b8' fix(developer_resources/betapull): force fresh downloads
+- 'd72f4ef' fix(dashboard): stabilize modals, controllers and layout
+- 'e38d62d' fix(system/database): harden mysql→mariadb migration for php8.1 deps
+- 'e5662cc' fix(system/fix): bypass cache for binaries
+- 'f5f465a' fix(dashboard/widgets): check sonarr via systemd service
 
 ### 🔧 Code Refactoring (1)
-- '95e24a6' refactor(system/fix): modularize fix modules
+- '1814f88' refactor(system): streamline fix/manage/update and docs
 
-### 📝 General Changes (1)
-- '630f2a2'  skip ci[meta] version 3.2.2.2158 released upstream - eta ~10 minutes
+### 📝 General Changes (4)
+- 'ab553a9'  dev(sync): maintenance sync on resources
+- 'e8d66d5'  minor: tweak on version orientation
+- '1b05f8e'  i18n(dashboard): sync user management strings
+- '221705d'  skip ci[meta] version 3.2.2.2368 released upstream - eta ~10 minutes
 
 ---
 
 **Release Information**:
-- **📅 Release Date**: 2025-12-19
-- **🏷️ Version**: 3.2.2.2368
-- **📋 Previous Version**: 3.2.2.2158
+- **📅 Release Date**: 2026-01-17
+- **🏷️ Version**: 3.2.2.2743
+- **📋 Previous Version**: 3.2.2.2368
 - **🔄 Release Type**: production"
