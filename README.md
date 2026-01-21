@@ -4,149 +4,203 @@
 
 ![version](https://badgen.net/badge/version/3.2.2.2743/blue)
 
-### OS/Distro Support
-
-![debian_12](https://badgen.net/badge/Debian%2012/passing/green) ![debian_11](https://badgen.net/badge/Debian%2011/passing/green) ![debian_10](https://badgen.net/badge/Debian%2010/EOL/black)
-
-![ubuntu_22.04](https://badgen.net/badge/Ubuntu%2022.04/passing/green)
-
-> :warning: **Support for Debian 10 has officially ended as of June 2024, marking its End of Life (EOL).**
-> Consequently, some upstream repositories, such as php.sury.org, have retired their sources for Debian 10.
-> This may result in installation failures for new setups.
-> Please note that QuickBox is not responsible for the availability or maintenance of third-party repositories.
-
-We recommend using either Debian 12 (Bookworm)[^1] or Debian 11 (Bullseye)
-Learn more about Debian 10 EOL [here](https://wiki.debian.org/LTS).
+**QuickBox Pro** is a complete media server management system featuring 60+ applications, a professional dashboard, CLI tools, and multi-user support.
 
 </div>
 
 ---
 
-## Installation
+## Table of Contents
 
-### Step 1: Elevate to Root
+- [Quick Install](#quick-install)
+- [Supported Operating Systems](#supported-operating-systems)
+- [Where to Get Your API Key](#where-to-get-your-api-key)
+- [CLI Options](#cli-options)
+- [Step-by-Step Installation](#step-by-step-installation)
+- [Troubleshooting](#troubleshooting)
+- [Support](#support)
 
-Switch to the root user and navigate to the `/root` directory.
+---
+
+## Quick Install
+
+**Requirements:** Root access, `curl`, a supported OS (Debian 11–13 or Ubuntu 22.04).
+
+> [!IMPORTANT]
+> **Fresh Installation Required:** QuickBox Pro should be installed on a fresh, minimal server installation for optimal compatibility and security. Installing on existing systems with pre-configured services is not recommended and may cause conflicts.
+
+```bash
+sudo -i
+curl -sL "https://github.com/QuickBox/pro-v3/raw/refs/heads/main/qbpro_v3" > qbpro && chmod +x qbpro
+./qbpro -u USERNAME -p 'PASSWORD' -k 'API_KEY'
+```
+
+Replace `USERNAME`, `PASSWORD`, and `API_KEY` with your values.
+
+**One-liner (updates system first):**
+
+```bash
+sudo -i
+apt-get -y update && apt-get -y upgrade && apt-get -y install curl && \
+curl -sL "https://github.com/QuickBox/pro-v3/raw/refs/heads/main/qbpro_v3" > qbpro && chmod +x qbpro && \
+./qbpro -u USERNAME -p 'PASSWORD' -k 'API_KEY'
+```
+
+---
+
+## Supported Operating Systems
+
+| Status | OS | Notes |
+| --- | --- | --- |
+| ✅ Recommended | Debian 13 (Trixie) | Best experience, current default |
+| ✅ Recommended | Debian 12 (Bookworm) | Stable, long-term choice |
+| ✅ Supported | Debian 11 (Bullseye) | Maintained, but older |
+| ✅ Supported | Ubuntu 22.04 LTS | Works out of the box, but does contain bloat |
+| ⛔ Deprecated | Debian 10 (Buster) | EOL; installs may fail |
+
+> [!WARNING]
+> Debian 10 reached End of Life in June 2024. Upstream repos (e.g., php.sury.org) have been retired, causing fresh installs to fail. Use Debian 12 or 13.
+
+---
+
+## Where to Get Your API Key
+
+You need a valid API key to install QuickBox Pro.
+
+| Platform | URL | Status |
+| --- | --- | --- |
+| **v3 Platform** | https://v3.quickbox.io/dashboard/api-keys | ✅ Primary (launching soon!) |
+| Classic Site | https://quickbox.io/my-account/api-keys | ⚠️ Legacy (to be retired) |
+
+> [!IMPORTANT]
+> **Platform Migration:** QuickBox Pro is transitioning to a new purpose-built platform at [v3.quickbox.io](https://v3.quickbox.io). All new purchases and billing are handled there. If you have existing API keys or subscriptions on the classic site, use the **Migration Utility** at [v3.quickbox.io/dashboard/migrate](https://v3.quickbox.io/dashboard/migrate) to transfer your keys and order history to the new platform. Your installed servers are unaffected—only your account records move. Migrate soon; the classic site will eventually be archived. Until the new site is public, you can continue purchasing and using API keys from the classic site for installations—but we recommend migrating when possible.
+
+---
+
+## CLI Options
+
+### Required
+
+| Flag | Description |
+| --- | --- |
+| `-u`, `--username` | Admin username (alphanumeric; cannot start or end with a number) |
+| `-p`, `--password` | Admin password (avoid special characters: `!@#$%^&*()_+`) |
+| `-k`, `--api-key` | Your QuickBox Pro API key |
+
+> [!CAUTION]
+> **Username Restrictions:** Avoid usernames that begin or end with numbers, contain uppercase letters, or use reserved names like `none`, `admin`, `root`, `user`, or `username`. The `none` username in particular will fail with applications like rtorrent that use screen.
+>
+> **Password Restrictions:** During initial setup, avoid special characters like `!`, `\`, `/`, `+`, `@`, and `%` as they can cause escaping issues. You can change to a stronger password with these characters after installation via the dashboard.
+
+### Optional
+
+| Flag | Description | Example |
+| --- | --- | --- |
+| `-d`, `--domain` | Domain name for the dashboard (enables SSL) | `-d mydomain.com` |
+| `-e`, `--email` | Email address for notifications/SSL | `-e user@example.com` |
+| `-ftp`, `--ftp` | Custom FTP port (numeric) | `-ftp 5757` |
+| `-ssh`, `--ssh-port` | Custom SSH port (numeric) | `-ssh 4747` |
+| `-t`, `--trackers` | Tracker policy: `allowed` or `blocked` | `-t blocked` |
+| `-m`, `--mount` | External mount path | `-m /mnt/storage` |
+| `-h`, `--help` | Display help | |
+
+### DNS Challenge Options (for SSL via DNS validation)
+
+| Flag | Description |
+| --- | --- |
+| `-dns`, `--dns` | Enable DNS challenge for SSL |
+| `--dns-provider` | DNS provider name (required with `-dns` in non-interactive mode) |
+| `--dns-credentials` | Path to DNS credentials file (required with `-dns` in non-interactive mode) |
+
+### Example
+
+```bash
+./qbpro -u admin -p 'MySecurePass' -k 'qbp_abc123...' -d 'server.example.com' -e 'admin@example.com' -ssh 2222 -t blocked
+```
+
+---
+
+## Step-by-Step Installation
+
+### 1. Switch to Root
 
 ```bash
 sudo -i
 ```
 
-- **Why elevate to root?**  
-  Root access is required to modify system files, such as those in `/root` and to perform critical tasks like configuring Nginx, PHP, etc.
-
-- **Missing sudo?**  
-  If `sudo` is not installed, you can add it with the following command as root:
+The installer must run as root. If `sudo` is not installed, log in as root directly or install it:
 
 ```bash
 apt-get install -y sudo
 ```
 
-  - **Why is sudo not installed by default?**  
-    This is usually determined by the OS installation parameters. If a root password is specified during the installation, `sudo` is not installed. If no root password is set, `sudo` is automatically installed. This can also vary by provider.
-
-### Step 2: Update Your System
-
-Ensure your system’s package lists are up to date and install any available upgrades.
+### 2. Update System (Recommended)
 
 ```bash
 apt-get -y update && apt-get -y upgrade
 ```
 
-- **Why update?**  
-  Updating ensures you have the latest software packages and security patches installed. It's a good practice to regularly update your system.
+### 3. Install curl (if needed)
 
-### Step 3: Download the Setup Script
+```bash
+apt-get -y install curl
+```
 
-Fetch the latest QuickBox Pro setup script.
+### 4. Download the Installer
 
 ```bash
 curl -sL "https://github.com/QuickBox/pro-v3/raw/refs/heads/main/qbpro_v3" > qbpro && chmod +x qbpro
 ```
 
-- **Curl not found?**  
-  If you receive a "curl: command not found" error, install curl with the following command:
-
-```bash
-sudo apt-get install -y curl
-```
-
-- **What is curl?**  
-  `curl` is a command-line tool used to download files from the internet.
-
-### Step 4: Run the Installer
-
-Run the setup script, providing your `USERNAME`, `PASSWORD`, and `API_KEY`:
+### 5. Run the Installer
 
 ```bash
 ./qbpro -u USERNAME -p 'PASSWORD' -k 'API_KEY'
 ```
 
-- `USERNAME`: Your desired username.
-- `PASSWORD`: Your desired password.
-- `API_KEY`: Your unique API Key from your QuickBox account.
+The installer will download dependencies, validate your API key, and configure your system.
 
 ---
 
-### Advanced Usage (Optional)
+## Troubleshooting
 
-You can add optional flags to customize your installation:
+### "API key not provided" or "Invalid API key"
 
-```bash
--d | --domain DOMAIN
--e | --email EMAIL@ADDRESS
--ftp | --ftp FTP_PORT
--ssh | --ssh-port SSH_PORT
--t | --trackers [allowed | blocked]
-```
+- Ensure you're using the correct API key from [v3.quickbox.io/dashboard/api-keys](https://v3.quickbox.io/dashboard/api-keys) or [quickbox.io/my-account/api-keys](https://quickbox.io/my-account/api-keys).
+- Verify your license is active.
 
-**Example:**
+### "User is not root or sudo"
+
+The installer requires root privileges. Run:
 
 ```bash
-./qbpro -u USERNAME -p 'PASSWORD' -k 'API_KEY' -d 'mydomain.com' -e 'my@email.com' -ftp 5757 -ssh 4747 -t blocked
+sudo -i
 ```
 
-This example installs QuickBox Pro with the following options:
+### "Password has invalid characters"
 
-- **Domain**: The domain name for your server.  
-    Example: `-d 'mydomain.com'`.  
-    **Important**: Ensure the domain is registered and DNS records are properly configured. This will set up the QuickBox Dashboard on your domain and install an SSL certificate.
-  
-- **Email**: Your email address for notifications.  
-    Example: `-e 'my@email.com'`.
-  
-- **FTP Port**: Custom FTP port.  
-    Example: `-ftp 5757`.
-  
-- **SSH Port**: Custom SSH port.  
-    Example: `-ssh 4747`.
-  
-- **Trackers**: Control tracker downloads.  
-    Example:  
-    - `-t allowed` (allow trackers)  
-    - `-t blocked` (block trackers)
+Passwords cannot contain: `!@#$%^&*()_+`
 
-### Run All in One Command
+Use alphanumeric characters and basic punctuation only.
 
-Update `USERNAME`[^2], `PASSWORD`[^3], and `API_KEY`[^4] as needed, and run everything in one command:
+### "Invalid username"
 
-```bash
-username="ENTER_DESIRED_USERNAME_HERE"
-password="ENTER_DESIRED_PASSWORD_HERE"
-api_key="ENTER_API_KEY_HERE"
+Usernames must be alphanumeric and cannot start or end with a number.
 
-(apt-get -y update && apt-get -y upgrade && apt -y install curl; \
-curl -sL "https://github.com/QuickBox/pro-v3/raw/refs/heads/main/qbpro_v3" > qbpro && chmod +x qbpro; \
-./qbpro -u "${username}" -p "${password}" -k "${api_key}")
-```
+### "Invalid domain name"
+
+Domain must be a valid FQDN. Ensure DNS records point to your server before using the `-d` flag.
+
+### "Distro not supported"
+
+Supported distributions: Debian 11 (Bullseye), Debian 12 (Bookworm), Debian 13 (Trixie), Ubuntu 22.04 (Jammy).
 
 ---
 
-### References
+## Support
 
-[^1]: Debian 12 (Bookworm) is the recommended distribution.
-[^2]: Choose a unique username for your QuickBox installation.
-[^3]: Choose a unique password for your QuickBox installation.
-[^4]: Your API Key is available in your QuickBox account [here](https://quickbox.io/my-account/api-keys).
-
----
+- **Website:**
+  - v3 Platform: https://v3.quickbox.io (preferable)
+  - Classic Site: https://quickbox.io (to access legacy account features - to be deprecated)
+- **Documentation:** https://v3.quickbox.io/docs
+- **Discord:** https://discord.gg/mca7RSv5pa
