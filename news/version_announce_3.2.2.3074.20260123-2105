@@ -1,7 +1,12 @@
-#!/bin/bash
-declare -g title text
-title="An update is available!"
-text="## QuickBox Pro v3.2.2.3074
+---
+type: version
+version: 3.2.2.3074
+date: 2026-01-23 21:05 UTC
+previous: 3.2.2.2743
+channel: production
+---
+
+## QuickBox Pro v3.2.2.3074
 
 ### 🧩 New Features (2)
 - '78fe3853f' feat(system/news): enhanced 'qb news --all' display with timestamps, separators, and word-wrap
@@ -32,4 +37,4 @@ text="## QuickBox Pro v3.2.2.3074
 - **📅 Release Date**: 2026-01-23
 - **🏷️ Version**: 3.2.2.3074
 - **📋 Previous Version**: 3.2.2.2743
-- **🔄 Release Type**: production"
+- **🔄 Release Type**: production
