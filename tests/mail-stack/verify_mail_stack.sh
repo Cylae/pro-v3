@@ -41,4 +41,6 @@ grep -q "Unauthorized" "${MAIL_STACK_DIR}/dashboard/api.php"
 echo "=== Testing Nginx Template Processing ==="
 grep -q "mail.example.com" "${MAIL_STACK_DIR}/nginx.conf"
 
+rm -rf "${MAIL_STACK_DIR}"
+
 echo "[✓] All verifications passed!"

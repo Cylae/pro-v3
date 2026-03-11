@@ -51,10 +51,10 @@ mapfile -t UA < <(
     .data
     | to_entries[]
     | .value as $v
-    | $v.user_information.username as ${USER}
+    | $v.user_information.username as $user
     | ($v.installed_software // $v.user_information.installed_software)
     | keys[]? as $app
-    | [${USER}, $app]
+    | [$user, $app]
     | @tsv
   ' "${INV}" | sort -u
 )
