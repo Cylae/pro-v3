@@ -47,12 +47,6 @@ if [ ! -f "${MAIL_STACK_DIR}/.env" ]; then
     MAIL_HOSTNAME="mail.$(hostname -f 2>/dev/null || echo "example.com")"
     MAIL_DOMAIN="$(hostname -d 2>/dev/null || echo "example.com")"
 
-    # Secure Token Generation
-    if ! API_TOKEN=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 32); then
-        echo "[!] Error: Failed to generate API token." >&2
-        exit 1
-    fi
-
     cat <<EOF > "${MAIL_STACK_DIR}/.env"
 MAIL_HOSTNAME=${MAIL_HOSTNAME}
 MAIL_DOMAIN=${MAIL_DOMAIN}
@@ -60,7 +54,6 @@ SSL_CERT_PATH=/etc/letsencrypt/live/${MAIL_HOSTNAME}/fullchain.pem
 SSL_KEY_PATH=/etc/letsencrypt/live/${MAIL_HOSTNAME}/privkey.pem
 PUID=${PUID}
 PGID=${PGID}
-API_TOKEN=${API_TOKEN}
 EOF
 fi
 
