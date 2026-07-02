@@ -47,7 +47,6 @@ to_stop+=("nginx.service")
 mapfile -O "${#to_stop[@]}" -t php_services < <(systemctl list-units --all --type=service 'php*-fpm.service' --no-legend 2>/dev/null | awk '{print $1}')
 to_stop+=("${php_services[@]}")
 
-WSD_DONE=0
 for row in "${UA[@]}"; do
   USER="${row%%$'\t'*}"
   APP="${row#*$'\t'}"
@@ -58,11 +57,8 @@ for row in "${UA[@]}"; do
 
   case "${APP_LC}" in
     wsdashboard)
-      if (( WSD_DONE == 0 )); then
-        to_stop+=("qbwsd.service")
-        to_stop+=("qbwsd-log-server.service")
-        WSD_DONE=1
-      fi
+      to_stop+=("qbwsd.service")
+      to_stop+=("qbwsd-log-server.service")
       continue
       ;;
     webconsole)
