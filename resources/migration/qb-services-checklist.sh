@@ -2,6 +2,15 @@
 # shellcheck disable=SC2249
 set -euo pipefail
 
+has_unit()      { [[ -n "${HAS[$1]:-}" ]]; }
+has_template()  { [[ -n "${HAS[$1@.service]:-}" ]]; }              # e.g., name@.service
+has_instance()  { local n="$1" u="$2"; [[ -n "${HAS[$n@${u}.service]:-}" ]]; }  # name@user.service
+
+print_line() {
+  local unit="$1"
+  printf " - systemctl start %s && journalctl -u %s -n 100 --no-pager\n" "${unit}" "${unit}"
+}
+
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
 # Inputs
 INV="${INV:-$(find ~/quickbox_backup/ -maxdepth 1 -type f -name 'qb_inventory_*.json' -print0 2>/dev/null | xargs -0 stat --format '%Y %n' 2>/dev/null | sort -nr | head -n1 | cut -d' ' -f2-)}"
@@ -29,15 +38,6 @@ mapfile -t UNITFILES < <(systemctl list-unit-files --type=service --no-legend 2>
 mapfile -t UNITS     < <(systemctl list-units --all --type=service --no-legend 2>/dev/null | awk '{print $1}')
 declare -A HAS
 for u in "${UNITFILES[@]}" "${UNITS[@]}"; do [[ -n "${u}" ]] && HAS["${u}"]=1; done
-
-has_unit()      { [[ -n "${HAS[$1]:-}" ]]; }
-has_template()  { [[ -n "${HAS[$1@.service]:-}" ]]; }              # e.g., name@.service
-has_instance()  { local n="$1" u="$2"; [[ -n "${HAS[$n@${u}.service]:-}" ]]; }  # name@user.service
-
-print_line() {
-  local unit="$1"
-  printf " - systemctl start %s && journalctl -u %s -n 100 --no-pager\n" "${unit}" "${unit}"
-}
 
 echo "=== Dashboard layer (start once) ==="
 has_unit "nginx.service" && print_line "nginx.service"
