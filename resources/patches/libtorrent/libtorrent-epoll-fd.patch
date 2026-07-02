@@ -23,13 +23,14 @@ diff -uNr libtorrent-0.16.5.orig/src/net/curl_socket.cc libtorrent-0.16.5.mod/sr
      return 0;
    }
 
-@@ -35,7 +42,8 @@
+@@ -35,7 +42,9 @@
      // TODO: Assign nullptr here....
      // TODO: Might not be getting removed ? verify fd, etc.
 
 -    socket = new CurlSocket(fd, stack);
-+      socket = new CurlSocket(fd, stack);
-+      stack->track_socket(fd, socket);
++    socket = nullptr;
++    socket = new CurlSocket(fd, stack);
++    stack->track_socket(fd, socket);
      curl_multi_assign(stack->handle(), fd, socket);
 
      this_thread::poll()->open(socket);
