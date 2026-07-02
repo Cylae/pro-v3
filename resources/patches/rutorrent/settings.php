@@ -115,7 +115,8 @@ class rTorrentSettings
 	{
 	        if( array_key_exists($ename, $this->hooks) )
 	        {
-			for( $i = 0; $i<count($this->hooks[$ename]); $i++ )
+			$c = count($this->hooks[$ename]);
+			for( $i = 0; $i<$c; $i++ )
 			{
 				if($this->hooks[$ename][$i] == $plugin)
 				{
