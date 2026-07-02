@@ -198,7 +198,8 @@ class rTorrentSettings
 			$this->version = $req->val[0];
 			$parts = explode('.', $this->version);
 			$this->iVersion = 0;
-			for($i = 0; $i<count($parts); $i++)
+			$partsCount = count($parts);
+			for($i = 0; $i<$partsCount; $i++)
 				$this->iVersion = ($this->iVersion<<8) + $parts[$i];
 
 			if($this->iVersion>0x806)
