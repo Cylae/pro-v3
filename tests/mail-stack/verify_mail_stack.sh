@@ -39,6 +39,24 @@ echo "=== Testing Security (api.php) ==="
 grep -q "API_TOKEN" "${MAIL_STACK_DIR}/dashboard/api.php"
 grep -q "Unauthorized" "${MAIL_STACK_DIR}/dashboard/api.php"
 
+echo "=== Testing Execution (api.php) ==="
+echo "API_TOKEN=test-token" > "${MAIL_STACK_DIR}/.env"
+mkdir -p "${MAIL_STACK_DIR}/mock_bin"
+cat << 'MOCK' > "${MAIL_STACK_DIR}/mock_bin/sudo"
+#!/bin/bash
+echo "MOCKED SUDO: $*"
+MOCK
+chmod +x "${MAIL_STACK_DIR}/mock_bin/sudo"
+
+API_OUT=$(PATH="${MAIL_STACK_DIR}/mock_bin:$PATH" php -r '
+$_SERVER["HTTP_X_API_TOKEN"] = "test-token";
+$_REQUEST["command"] = "list";
+$_REQUEST["args"] = [];
+require "'"${MAIL_STACK_DIR}/dashboard/api.php"'";
+')
+
+echo "$API_OUT" | grep -q "MOCKED SUDO:.*manage-mail.sh list"
+
 echo "=== Testing Nginx Template Processing ==="
 grep -q "mail.example.com" "${MAIL_STACK_DIR}/nginx.conf"
 
