@@ -25,7 +25,7 @@ if (file_exists($env_file)) {
 $api_token = $config['API_TOKEN'] ?? null;
 $provided_token = $_SERVER['HTTP_X_API_TOKEN'] ?? $_REQUEST['token'] ?? null;
 
-if (empty($api_token) || $provided_token !== $api_token) {
+if (empty($api_token) || !hash_equals((string)$api_token, (string)$provided_token)) {
     http_response_code(401);
     echo json_encode(['error' => 'Unauthorized: Invalid or missing API token.']);
     exit;
@@ -51,10 +51,30 @@ if (!file_exists($cli_path)) {
     $cli_path = dirname(__DIR__) . '/manage-mail.sh';
 }
 
-$escaped_args = array_map('escapeshellarg', $args);
-$full_command = 'sudo ' . escapeshellarg($cli_path) . ' ' . escapeshellarg($command) . ' ' . implode(' ', $escaped_args) . ' 2>&1';
+$cmd_array = ['sudo', $cli_path, $command];
+$cmd_array = array_merge($cmd_array, $args);
 
-exec($full_command, $output, $return_var);
+$descriptorspec = [
+    1 => ['pipe', 'w'], // stdout
+    2 => ['redirect', 1] // stderr redirected to stdout
+];
+
+$process = proc_open($cmd_array, $descriptorspec, $pipes);
+
+if (is_resource($process)) {
+    $combined_output = stream_get_contents($pipes[1]);
+    fclose($pipes[1]);
+    $return_var = proc_close($process);
+
+    if ($combined_output === '') {
+        $output = [];
+    } else {
+        $output = explode("\n", rtrim($combined_output, "\n"));
+    }
+} else {
+    $return_var = -1;
+    $output = [];
+}
 
 echo json_encode([
     'success' => ($return_var === 0),
