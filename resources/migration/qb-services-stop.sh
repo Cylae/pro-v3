@@ -49,7 +49,6 @@ to_stop+=("${php_services[@]}")
 
 WSD_DONE=0
 for row in "${UA[@]}"; do
-  USER="${row%%$'\t'*}"
   APP="${row#*$'\t'}"
   APP_LC="${APP,,}"
   [[ "${APP_LC}" =~ ${EXCLUDE_RE} ]] && continue
@@ -66,22 +65,22 @@ for row in "${UA[@]}"; do
       continue
       ;;
     webconsole)
-      to_stop+=("ttyd@${USER}.service")
+      to_stop+=("ttyd@${row%%$'\t'*}.service")
       to_stop+=("ttyd.service")
       continue
       ;;
     deluge)
       # daemon + web (cover templated and singleton)
-      to_stop+=("deluged@${USER}.service")
+      to_stop+=("deluged@${row%%$'\t'*}.service")
       to_stop+=("deluged.service")
-      to_stop+=("deluge-web@${USER}.service")
+      to_stop+=("deluge-web@${row%%$'\t'*}.service")
       to_stop+=("deluge-web.service")
       continue
       ;;
   esac
 
   # Generic: try templated first, then singleton
-  to_stop+=("${svc}@${USER}.service")
+  to_stop+=("${svc}@${row%%$'\t'*}.service")
   to_stop+=("${svc}.service")
 done
 
