@@ -32,6 +32,22 @@ echo "=== Testing Deployment ==="
 echo "=== Testing CLI ==="
 "${MAIL_STACK_DIR}/manage-mail.sh" list | grep -q "MOCK DOCKER: compose -f ${MAIL_STACK_DIR}/docker-compose.yml exec -T mailserver setup email list"
 
+# Test missing arguments for 'add'
+set +e
+ADD_NO_ARGS_OUT=$("${MAIL_STACK_DIR}/manage-mail.sh" add 2>&1)
+ADD_EXIT_CODE=$?
+set -e
+
+if [ $ADD_EXIT_CODE -ne 1 ]; then
+    echo "Expected manage-mail.sh add without arguments to exit with code 1, but got $ADD_EXIT_CODE"
+    exit 1
+fi
+
+if ! echo "${ADD_NO_ARGS_OUT}" | grep -q "Usage: .* add <email> <password>"; then
+    echo "Expected manage-mail.sh add without arguments to print usage"
+    exit 1
+fi
+
 echo "=== Testing Security (api.php) ==="
 # Mocking PHP exec
 # We can't easily test PHP in bash with mocks for shell_exec/exec unless we use a wrapper
