@@ -64,8 +64,8 @@ current_user=""
 WSD_PRINTED=0
 for row in "${UA[@]}"; do
   USER="${row%%$'\t'*}"
-  APP="${row#*$'\t'}"
-  APP_LC="${APP,,}"
+  APP_LC="${row#*$'\t'}"
+  APP_LC="${APP_LC,,}"
   [[ "${APP_LC}" =~ ${EXCLUDE_RE} ]] && continue
 
   # Header per user (once)
